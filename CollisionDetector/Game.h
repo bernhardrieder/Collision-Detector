@@ -31,6 +31,7 @@ public:
     // Properties
     void GetDefaultSize( int& width, int& height ) const;
 
+	float AspectRatio() const;
 private:
 
     void Update(DX::StepTimer const& timer);
@@ -40,7 +41,9 @@ private:
     void Present();
 
     void CreateDevice();
+	void initializeDeviceDependentObjects();
     void CreateResources();
+	void initializeWindowSizeDependentObjects();
 
     void OnDeviceLost();
 
@@ -62,4 +65,9 @@ private:
 	
     // Rendering loop timer.
     DX::StepTimer                                   m_timer;
+	Camera m_camera;
+	std::unique_ptr<DirectX::CommonStates> m_states;
+	std::unique_ptr<DirectX::BasicEffect> m_effect;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 };

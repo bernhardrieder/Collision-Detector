@@ -71,6 +71,24 @@ void Game::Render()
     Clear();
 
     // TODO: Add your rendering code here.
+	m_d3dContext->OMSetBlendState( m_states->Opaque(), nullptr, 0xFFFFFFFF );
+	m_d3dContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
+	m_d3dContext->RSSetState(m_states->CullNone());
+
+	m_effect->Apply(m_d3dContext.Get());
+
+	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
+
+	m_batch->Begin();
+
+	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Yellow);
+	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Yellow);
+	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Yellow);
+	m_effect->SetWorld(Matrix::CreateScale(100) * Matrix::CreateRotationZ(0) * Matrix::CreateTranslation(0, 0, 0));
+
+	m_batch->DrawTriangle(v1, v2, v3);
+
+	m_batch->End();
 
     Present();
 }
@@ -147,6 +165,11 @@ void Game::GetDefaultSize(int& width, int& height) const
     // TODO: Change to desired default window size (note minimum size is 320x200).
     width = 800;
     height = 600;
+}
+
+float Game::AspectRatio() const
+{
+	return static_cast<float>(m_outputWidth) / static_cast<float>(m_outputHeight);
 }
 
 // These are the resources that depend on the device.
@@ -231,6 +254,32 @@ void Game::CreateDevice()
         (void)m_d3dContext.As(&m_d3dContext1);
 
     // TODO: Initialize device dependent objects here (independent of window size).
+	initializeDeviceDependentObjects();
+}
+
+void Game::initializeDeviceDependentObjects()
+{
+	m_camera.SetPosition(0.0f, 0.0f, -200.f);
+	m_camera.LookAt(Vector3::Up, Vector3(0, 0, 0) - m_camera.GetPosition());
+	m_camera.UpdateViewMatrix();
+
+	m_states = std::make_unique<CommonStates>(m_d3dDevice.Get());
+	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(m_d3dContext.Get());
+
+	/******************* simple shader *******************/
+	m_effect = std::make_unique<BasicEffect>(m_d3dDevice.Get());
+	m_effect->SetVertexColorEnabled(true);
+
+	void const* shaderByteCode;
+	size_t byteCodeLength;
+
+	m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+
+	DX::ThrowIfFailed(
+		m_d3dDevice->CreateInputLayout(VertexPositionColor::InputElements,
+			VertexPositionColor::InputElementCount,
+			shaderByteCode, byteCodeLength,
+			m_inputLayout.ReleaseAndGetAddressOf()));
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -350,6 +399,14 @@ void Game::CreateResources()
     DX::ThrowIfFailed(m_d3dDevice->CreateDepthStencilView(depthStencil.Get(), &depthStencilViewDesc, m_depthStencilView.ReleaseAndGetAddressOf()));
 
     // TODO: Initialize windows-size dependent objects here.
+	initializeWindowSizeDependentObjects();
+}
+
+void Game::initializeWindowSizeDependentObjects()
+{
+	m_camera.SetOrthographicLens(m_outputWidth, m_outputHeight, 0.1f, 1000.f);
+	m_effect->SetProjection(m_camera.GetProj());
+	m_effect->SetView(m_camera.GetView());
 }
 
 void Game::OnDeviceLost()
@@ -364,6 +421,11 @@ void Game::OnDeviceLost()
     m_d3dContext.Reset();
     m_d3dDevice1.Reset();
     m_d3dDevice.Reset();
+	
+	m_states.reset();
+	m_effect.reset();
+	m_batch.reset();
+	m_inputLayout.Reset();
 
     CreateDevice();
 
