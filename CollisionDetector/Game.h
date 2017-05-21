@@ -35,6 +35,8 @@ public:
 private:
 
     void Update(DX::StepTimer const& timer);
+	void checkAndProcessKeyboardInput(const float& deltaTime);
+	void checkAndProcessMouseInput(const float& deltaTime);
     void Render();
 
     void Clear();
@@ -70,4 +72,6 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_effect;
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	std::unique_ptr<DirectX::Keyboard> m_keyboard;
+	std::unique_ptr<DirectX::Mouse> m_mouse;
 };

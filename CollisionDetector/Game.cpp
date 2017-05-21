@@ -37,6 +37,10 @@ void Game::Initialize(HWND window, int width, int height)
     m_timer.SetFixedTimeStep(true);
     m_timer.SetTargetElapsedSeconds(1.0 / 60);
     */
+
+	m_keyboard = std::make_unique<Keyboard>();
+	m_mouse = std::make_unique<Mouse>();
+	m_mouse->SetWindow(window);
 }
 
 // Executes the basic game loop.
@@ -55,8 +59,29 @@ void Game::Update(DX::StepTimer const& timer)
 {
     float elapsedTime = float(timer.GetElapsedSeconds());
 
-    // TODO: Add your game logic here.
-    (void)elapsedTime;
+	checkAndProcessKeyboardInput(elapsedTime);
+	checkAndProcessMouseInput(elapsedTime);
+}
+
+void Game::checkAndProcessKeyboardInput(const float& deltaTime)
+{
+	auto kb = m_keyboard->GetState();
+	if (kb.Escape)
+		PostQuitMessage(0);
+
+	if (kb.A || kb.Left)
+		void; //player rotation left
+	else if (kb.D || kb.Right)
+		void; //player roation right
+	if (kb.W || kb.Up)
+		void; //player forward
+	else if (kb.S || kb.Down)
+		void; //player backwards
+}
+
+void Game::checkAndProcessMouseInput(const float& deltaTime)
+{
+	auto mouse = m_mouse->GetState();
 }
 
 // Draws the scene.
