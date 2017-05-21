@@ -8,6 +8,7 @@
 extern void ExitGame();
 
 using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 using Microsoft::WRL::ComPtr;
 
@@ -55,7 +56,7 @@ void Game::Update(DX::StepTimer const& timer)
     float elapsedTime = float(timer.GetElapsedSeconds());
 
     // TODO: Add your game logic here.
-    elapsedTime;
+    (void)elapsedTime;
 }
 
 // Draws the scene.
