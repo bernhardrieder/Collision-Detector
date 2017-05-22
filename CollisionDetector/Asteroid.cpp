@@ -20,6 +20,8 @@ Asteroid::~Asteroid()
 
 void Asteroid::InitializeRenderable(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const std::uniform_real_distribution<float>& verticesDistribution)
 {
+	createConvexHullWithJarvisMarch(verticesDistribution);
+
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(deviceContext);
 	m_states = std::make_unique<CommonStates>(device);
 
@@ -37,8 +39,6 @@ void Asteroid::InitializeRenderable(ID3D11Device* device, ID3D11DeviceContext* d
 			VertexPositionColor::InputElementCount,
 			shaderByteCode, byteCodeLength,
 			m_inputLayout.ReleaseAndGetAddressOf()));
-
-	createConvexHullWithJarvisMarch(verticesDistribution);
 }
 
 void Asteroid::InitializeTransform(const std::uniform_real_distribution<float>& positionDistribution, const std::uniform_real_distribution<float>& rotationAngleDistribution, const std::uniform_real_distribution<float>& scaleDistribution)
@@ -87,14 +87,17 @@ void Asteroid::updateMovementSpeedAndRotationChange(const float& deltaTime)
 
 void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribution<float>& verticesDistribution)
 {
-	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::DarkGray);
-	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::DarkGray);
-	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::DarkGray);
+	std::vector<Vector2> randomVertices;
+	size_t randomVerticesCount = 8;
 
-	m_vertices.push_back(v1);
-	m_vertices.push_back(v2);
-	m_vertices.push_back(v3);
-	m_vertices.push_back(v1);
+	for (size_t i = 0; i < randomVerticesCount; ++i)
+		randomVertices.push_back(Vector2(verticesDistribution(m_mersenneTwisterEngine), verticesDistribution(m_mersenneTwisterEngine)));
+
+	JarvisMarch jarvisMarch;
+	auto hull = jarvisMarch.GetConvexHull(randomVertices);
+	for (size_t i = 0; i < hull.size(); ++i)
+		m_vertices.push_back(VertexPositionColor(Vector3(hull[i].x, hull[i].y, 0.f), Colors::DarkGray));
+	m_vertices.push_back(VertexPositionColor(Vector3(hull[0].x, hull[0].y, 0.f), Colors::DarkGray));
 }
 
 void Asteroid::simpleWanderAlgorithm(const float& deltaTime)

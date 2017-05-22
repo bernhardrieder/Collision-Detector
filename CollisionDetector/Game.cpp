@@ -47,8 +47,8 @@ void Game::Initialize(HWND window, int width, int height)
 
 	auto randomPositionDistribution = std::uniform_real_distribution<float>(-1000, 1000);
 	auto randomRotationAngleDistribution = std::uniform_real_distribution<float>(0, 360);
-	auto randomScaleDistribution = std::uniform_real_distribution<float>(5, 15);
-	auto randomVerticesDistribution = std::uniform_real_distribution<float>(-1, 1);
+	auto randomScaleDistribution = std::uniform_real_distribution<float>(0.5f, 2);
+	auto randomVerticesDistribution = std::uniform_real_distribution<float>(-10, 10);
 	for(int i = 0; i < m_numOfAsteroids; ++i)
 	{
 		m_asteroids[i].InitializeRenderable(m_d3dDevice.Get(), m_d3dContext.Get(), randomVerticesDistribution);
@@ -109,7 +109,7 @@ void Game::Render()
 
 	m_player.Render(m_d3dContext.Get(), m_camera);
 
-	for (int i = 0; i < m_numOfAsteroids; ++i)
+	for (size_t i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Render(m_d3dContext.Get(), m_camera);
 
     Present();
@@ -281,7 +281,7 @@ void Game::CreateDevice()
 
 void Game::initializeDeviceDependentObjects()
 {
-	m_camera.SetPosition(0.0f, 0.0f, -200.f);
+	m_camera.SetPosition(0.0f, 0.0f, -1.f);
 	m_camera.LookAt(Vector3::Up, Vector3(0, 0, 0) - m_camera.GetPosition());
 }
 
@@ -407,7 +407,8 @@ void Game::CreateResources()
 
 void Game::initializeWindowSizeDependentObjects()
 {
-	m_camera.SetOrthographicLens(m_outputWidth, m_outputHeight, 0.1f, 1000.f);
+	m_camera.SetOrthographicLens(m_outputWidth, m_outputHeight, 0.f, 1000.f);
+	m_camera.UpdateViewMatrix();
 }
 
 void Game::OnDeviceLost()

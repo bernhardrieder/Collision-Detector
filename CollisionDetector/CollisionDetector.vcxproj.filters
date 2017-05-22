@@ -14,6 +14,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="SimpleMovable2D.h" />
     <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="JarvisMarch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -23,6 +24,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SimpleMovable2D.cpp" />
     <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="JarvisMarch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
