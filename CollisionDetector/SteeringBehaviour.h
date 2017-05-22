@@ -15,25 +15,25 @@ namespace SteeringBehaviours
 		void SetCharacter(Kinematic* character);
 
 	protected:
-		Kinematic* Character;
+		Kinematic* m_character;
 	};
 
 	class Align : public SteeringBehaviour
 	{
 	public:
-		Align(Kinematic* character, Kinematic* target, float max_angular_acceleration, float max_rotation, float target_radius, float slow_radius, float time_to_target);
+		Align(Kinematic* character, Kinematic* target, const float& maxAngularAcceleration, const float& maxRotation, const float& targetRadius, const float& slowRadius, const float& timeToTarget);
 		void GetSteering(SteeringOutput* output) override;
 
 	protected:
-		Kinematic* Target;
+		Kinematic* m_target;
 
-		float MaxAngularAcceleration;
-		float MaxRotation;
+		float m_maxAngularAcceleration;
+		float m_maxRotation;
 
-		float TargetRadius;
-		float SlowRadius;
+		float m_targetRadius;
+		float m_slowRadius;
 
-		float TimeToTarget = 0.1f;
+		float m_timeToTarget = 0.1f;
 
 	private:
 		static float mapToRange(float rotation);
@@ -42,39 +42,38 @@ namespace SteeringBehaviours
 	class Face : public Align
 	{
 	public:
-		Face(Kinematic* character, Kinematic* target, float max_angular_acceleration, float max_rotation, float target_radius, float slow_radius, float time_to_target);
+		Face(Kinematic* character, Kinematic* target, const float& maxAngularAcceleration, const float& maxRotation, const float& targetRadius, const float& slowRadius, const float& timeToTarget);
 		void GetSteering(SteeringOutput* output) override;
 
 	protected:
-		Kinematic* Target;
+		Kinematic* m_target;
 	};
 
 	class Wander : public Face
 	{
 	public:
-		Wander(Kinematic* character, float max_angular_acceleration, float max_rotation, float target_radius, float slow_radius, float time_to_target, float wanderOffset, float wanderRadius, float wanderRate, float maxAcceleration);
+		Wander(Kinematic* character, const float& maxAngularAcceleration, const float& maxRotation, const float& targetRadius, const float& slowRadius, const float& timeToTarget, const float& wanderOffset, const float& wanderRadius, const float& wanderRate, const float& maxLinearAcceleration);
 		void GetSteering(SteeringOutput* output) override;
 
 	protected:
 		// holds the radius and forward offset of the wander circle
-		float WanderOffset;
-		float WanderRadius;
+		float m_wanderOffset;
+		float m_wanderRadius;
 
 		// holds the maximum rate at which the wander orientation can change
-		float WanderRate;
+		float m_wanderRate;
 
 		// holds the maximum acceleration of the character
-		float MaxAcceleration;
+		float m_maxLinearAcceleration;
 
 		// holds the current orientation of the wander target
-		float WanderOrientation = 0;
-	private:
+		float m_wanderOrientation = 0;
 
-		//todo: initialize;
+	private:
+		void initializeRandomDistribution();
+
 		std::random_device m_randomDevice;
 		std::mt19937_64 m_mersenneTwisterEngine;
 		std::uniform_real_distribution<float> m_randomDistribution;
-
-		void initializeRandomBinomial();
 	};
 }
