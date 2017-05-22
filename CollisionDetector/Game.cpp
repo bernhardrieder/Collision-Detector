@@ -69,14 +69,6 @@ void Game::checkAndProcessKeyboardInput(const float& deltaTime)
 	if (kb.Escape)
 		PostQuitMessage(0);
 
-	if (kb.A || kb.Left)
-		void; //player rotation left
-	else if (kb.D || kb.Right)
-		void; //player roation right
-	if (kb.W || kb.Up)
-		void; //player forward
-	else if (kb.S || kb.Down)
-		void; //player backwards
 }
 
 void Game::checkAndProcessMouseInput(const float& deltaTime)
