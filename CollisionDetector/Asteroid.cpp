@@ -50,8 +50,8 @@ void Asteroid::InitializeTransform(const std::uniform_real_distribution<float>& 
 
 void Asteroid::Update(const float& deltaTime)
 {
-	updateMovementSpeedAndRotationChange(deltaTime);
-	moveForward(deltaTime);
+	//todo: rotate asteroid without changing flight direction!!
+	simpleWanderAlgorithm(deltaTime);
 }
 
 void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
@@ -102,4 +102,6 @@ void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribut
 
 void Asteroid::simpleWanderAlgorithm(const float& deltaTime)
 {
+	updateMovementSpeedAndRotationChange(deltaTime);
+	moveForward(deltaTime);
 }
