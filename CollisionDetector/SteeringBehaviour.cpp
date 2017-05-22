@@ -1,16 +1,29 @@
 #include "pch.h"
 #include "SteeringBehaviour.h"
 
+using namespace SteeringBehaviours;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-SteeringBehaviour::SteeringBehaviour(Kinematic* character) : Character(character)
+SteeringBehaviour::SteeringBehaviour(Kinematic* character) : 
+	Character(character)
 {
 }
 
 void SteeringBehaviour::SetCharacter(Kinematic* character)
 {
 	Character = character;
+}
+
+Align::Align(Kinematic* character, Kinematic* target, float max_angular_acceleration, float max_rotation, float target_radius, float slow_radius, float time_to_target) : 
+	SteeringBehaviour(character),
+	Target(target),
+	MaxAngularAcceleration(max_angular_acceleration),
+	MaxRotation(max_rotation),
+	TargetRadius(target_radius),
+	SlowRadius(slow_radius),
+	TimeToTarget(time_to_target)
+{
 }
 
 void Align::GetSteering(SteeringOutput* output)
@@ -50,6 +63,67 @@ float Align::mapToRange(float rotation)
 	return rotation;
 }
 
+Face::Face(Kinematic* character, Kinematic* target, float max_angular_acceleration, float max_rotation, float target_radius, float slow_radius, float time_to_target) :
+	Align(character, nullptr, max_angular_acceleration, max_rotation, target_radius, slow_radius, time_to_target),
+	Target(target)
+{
+}
+
 void Face::GetSteering(SteeringOutput* output)
 {
+	// 1. calculate the target to delegate to align
+
+	// work out the direction to target
+	Vector3 direction = Target->Position - Character->Position;
+
+	// check for a zero direction, and make no change if so
+	if (direction.Length() < std::numeric_limits<float>::epsilon())
+		return; //return target?
+
+	// put the target together
+	Align::Target = Target;
+	Align::Target->Orientation = std::atan2(-direction.x, direction.z); //todo: check if direction.z is correct -> if not, test direction.y
+
+	// 2. delegate to align
+	Align::GetSteering(output);
+}
+
+Wander::Wander(Kinematic* character, float max_angular_acceleration, float max_rotation, float target_radius, float slow_radius, float time_to_target, float wanderOffset, float wanderRadius, float wanderRate, float maxAcceleration) :
+	Face(character, nullptr, max_angular_acceleration, max_rotation, target_radius, slow_radius, time_to_target), 
+	WanderOffset(wanderOffset), 
+	WanderRadius(wanderRadius), 
+	WanderRate(wanderRate), 
+	MaxAcceleration(maxAcceleration)
+{
+}
+
+void Wander::GetSteering(SteeringOutput* output)
+{
+	// 1. calculate the target to delegate to face
+
+	// update the wander orientation
+	WanderOrientation += m_binomialDistribution(m_mersenneTwisterEngine) * WanderRate;
+
+	Kinematic target;
+	// calculate the combined target orientation
+	target.Orientation = WanderOrientation + Character->Orientation;
+
+	// calculate the center of the wander circle
+	target.Position = Character->Position + WanderOffset * Character->GetOrientationAsVector();
+
+	// calculate the target location
+	target.Position += WanderRadius * target.GetOrientationAsVector();
+
+	// 2. delegate to face
+	Target = &target;
+	Face::GetSteering(output);
+
+	// 3. now set the linear acceleration to be at full acceleration in the direction of the orientation
+	output->Linear = MaxAcceleration * Character->GetOrientationAsVector();
+}
+
+void Wander::initializeRandomBinomial()
+{
+	m_mersenneTwisterEngine = std::mt19937_64(m_randomDevice());
+	m_binomialDistribution = std::binomial_distribution<float>(-1, 1);
 }

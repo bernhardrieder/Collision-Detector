@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SteeringBehaviourHelper.h"
 
+using namespace SteeringBehaviours;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -56,7 +57,7 @@ void Location::Integrate(const DirectX::SimpleMath::Vector3& velocity, const flo
 
 DirectX::SimpleMath::Vector3 Location::GetOrientationAsVector() const
 {
-	return DirectX::SimpleMath::Vector3(-std::sin(Orientation), std::cos(Orientation), 0);
+	return OrientationToVector(Orientation);
 }
 
 Kinematic& Kinematic::operator=(const Location& other)
@@ -143,4 +144,10 @@ void Kinematic::TrimMaxSpeed(const float& speed)
 		Velocity.Normalize();
 		Velocity *= speed;
 	}
+}
+
+DirectX::SimpleMath::Vector3 SteeringBehaviours::OrientationToVector(float orientation)
+{
+	return DirectX::SimpleMath::Vector3(-std::sin(orientation), std::cos(orientation), 0);
+
 }
