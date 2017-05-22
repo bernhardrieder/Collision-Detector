@@ -1,5 +1,7 @@
 #pragma once
-class Player
+#include "SimpleMovable2D.h"
+
+class Player : public SimpleMovable2D
 {
 public:
 	Player();
@@ -10,29 +12,14 @@ public:
 	void Render(ID3D11DeviceContext* deviceContext, const Camera& camera);
 
 	void AttachFollowingCamera(Camera* camera);
-	void SetPosition(const DirectX::SimpleMath::Vector3& newPosition);
-	void SetRotationAngle(const float& newAngle);
-	void SetMovementSpeed(const float& newMovementSpeed);
-	void SetRotationSpeed(const float& newRotationSpeed);
-	void SetScale(const DirectX::SimpleMath::Vector3& newScale);
+	void SetPosition(const DirectX::SimpleMath::Vector3& newPosition) override;
 
 private:
 	void checkAndProcessKeyboardInput(const DirectX::Keyboard* keyboard, float deltaTime);
-	void moveForward(const float& deltaTime);
-	void moveBackwards(const float& deltaTime);
-	void move(const DirectX::SimpleMath::Vector3& normalizedDirectionVector, const float& speed, const float& deltaTime);
-	void rotateLeft(const float& deltaTime);
-	void rotateRight(const float& deltaTime);
-	void rotate(const float& degrees, const float& deltaTime);
+	void moveForward(const float& deltaTime) override;
+	void moveBackwards(const float& deltaTime) override;
 
-	float m_movementSpeed = 40.f;
-	DirectX::SimpleMath::Vector3 m_upVector = DirectX::SimpleMath::Vector3::Up;
-	float m_rotationSpeed = 3.f;
-	int m_speedUpFactor = 1;
-
-	DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3::Zero;
-	float m_rotationAngle = 0;
-	DirectX::SimpleMath::Vector3 m_scale = DirectX::SimpleMath::Vector3::One;
+	int m_movementSpeedUpFactor = 1;
 
 	Camera* m_followingCamera = nullptr;	
 
