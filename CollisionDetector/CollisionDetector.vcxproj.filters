@@ -13,6 +13,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SimpleMovable2D.h" />
+    <ClInclude Include="Asteroid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -21,6 +22,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SimpleMovable2D.cpp" />
+    <ClCompile Include="Asteroid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

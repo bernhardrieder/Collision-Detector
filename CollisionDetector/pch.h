@@ -73,3 +73,4 @@ namespace DX
 #include "Camera.h"
 #include "Player.h"
 #include "SimpleMovable2D.h";
+#include "Asteroid.h"

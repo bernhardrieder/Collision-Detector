@@ -44,6 +44,11 @@ void Game::Initialize(HWND window, int width, int height)
 	m_player.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
 	m_player.SetScale(Vector3::One * 10);
 	m_player.AttachFollowingCamera(&m_camera);
+	for(int i = 0; i < m_numOfAsteroids; ++i)
+	{
+		m_asteroids[i].Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
+		m_asteroids[i].SetRandomValues();
+	}
 }
 
 // Executes the basic game loop.
@@ -66,7 +71,9 @@ void Game::Update(DX::StepTimer const& timer)
 	checkAndProcessMouseInput(elapsedTime);
 
 	m_player.Update(elapsedTime, m_keyboard.get());
-
+	for (int i = 0; i < m_numOfAsteroids; ++i)
+		m_asteroids[i].Update(elapsedTime);
+	
 	m_camera.UpdateViewMatrix();
 }
 
@@ -114,6 +121,8 @@ void Game::Render()
 	m_batch->End();
 
 	m_player.Render(m_d3dContext.Get(), m_camera);
+	for (int i = 0; i < m_numOfAsteroids; ++i)
+		m_asteroids[i].Render(m_d3dContext.Get(), m_camera);
 
     Present();
 }
