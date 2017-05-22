@@ -5,8 +5,9 @@ public:
 	Player();
 	~Player();
 
+	void Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceConrtext);
 	void Update(float deltaTime);
-	void Render(ID3D11DeviceContext* deviceContext);
+	void Render(ID3D11DeviceContext* deviceContext, const Camera& camera);
 
 	void AttachFollowingCamera(Camera* camera);
 	void SetPosition(const DirectX::SimpleMath::Vector3& newPosition);
@@ -26,13 +27,17 @@ private:
 	float m_movementSpeed = 10.f;
 	float m_rotationSpeed = 10.f;
 
-	DirectX::SimpleMath::Vector3 m_position;
+	DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3::Zero;
 	float m_rotationAngle = 0;
-	const DirectX::SimpleMath::Vector3 m_rotationAxis = DirectX::SimpleMath::Vector3::UnitZ;
 
 	Camera* m_followingCamera = nullptr;	
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;
 
+	//rendering
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;	
+	std::unique_ptr<DirectX::BasicEffect> m_effect;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	std::unique_ptr<DirectX::CommonStates> m_states;
 
 };
 

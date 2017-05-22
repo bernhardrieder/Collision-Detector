@@ -41,6 +41,8 @@ void Game::Initialize(HWND window, int width, int height)
 	m_keyboard = std::make_unique<Keyboard>();
 	m_mouse = std::make_unique<Mouse>();
 	m_mouse->SetWindow(window);
+	m_player.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
+	
 }
 
 // Executes the basic game loop.
@@ -61,6 +63,8 @@ void Game::Update(DX::StepTimer const& timer)
 
 	checkAndProcessKeyboardInput(elapsedTime);
 	checkAndProcessMouseInput(elapsedTime);
+
+	m_player.Update(elapsedTime);
 }
 
 void Game::checkAndProcessKeyboardInput(const float& deltaTime)
@@ -68,7 +72,6 @@ void Game::checkAndProcessKeyboardInput(const float& deltaTime)
 	auto kb = m_keyboard->GetState();
 	if (kb.Escape)
 		PostQuitMessage(0);
-
 }
 
 void Game::checkAndProcessMouseInput(const float& deltaTime)
@@ -106,6 +109,8 @@ void Game::Render()
 	m_batch->DrawTriangle(v1, v2, v3);
 
 	m_batch->End();
+
+	m_player.Render(m_d3dContext.Get(), m_camera);
 
     Present();
 }
