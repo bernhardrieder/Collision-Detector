@@ -8,9 +8,9 @@ struct Transform
 
 	struct Matrices
 	{
-		DirectX::SimpleMath::Matrix Translation;
-		DirectX::SimpleMath::Matrix Rotation;
-		DirectX::SimpleMath::Matrix Scale;
+		DirectX::SimpleMath::Matrix Translation = DirectX::SimpleMath::Matrix::Identity;
+		DirectX::SimpleMath::Matrix Rotation = DirectX::SimpleMath::Matrix::Identity;
+		DirectX::SimpleMath::Matrix Scale = DirectX::SimpleMath::Matrix::Identity;
 	} Matrices;
 };
 
@@ -21,9 +21,10 @@ public:
 
 	virtual void SetPosition(const DirectX::SimpleMath::Vector3& newPosition);
 	virtual void SetRotationAngle(const float& newAngle);
+	virtual void SetScale(const DirectX::SimpleMath::Vector3& newScale);
+
 	virtual void SetMovementSpeed(const float& newMovementSpeed);
 	virtual void SetRotationSpeed(const float& newRotationSpeed);
-	virtual void SetScale(const DirectX::SimpleMath::Vector3& newScale);
 
 protected:
 	virtual void moveForward(const float& deltaTime);
