@@ -69,10 +69,9 @@ private:
     DX::StepTimer                                   m_timer;
 	Camera m_camera;
 	Player m_player;
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	std::unique_ptr<DirectX::BasicEffect> m_effect;
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	const static size_t m_numOfAsteroids = 1000;
+	Asteroid m_asteroids[m_numOfAsteroids];
+	
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;
 	std::unique_ptr<DirectX::Mouse> m_mouse;
 };

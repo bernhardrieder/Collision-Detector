@@ -39,6 +39,10 @@
 #include <exception>
 #include <memory>
 #include <stdexcept>
+#include <vector>
+#include <random>
+#include <limits>
+#include <iostream>
 
 namespace DX
 {
@@ -70,6 +74,9 @@ namespace DX
 #include "VertexTypes.h"
 #include "WICTextureLoader.h"
 
+#include "JarvisMarch.h"
 #include "Camera.h"
 #include "Player.h"
-#include "SimpleMovable2D.h";
+#include "SimpleMovable2D.h"
+#include "Asteroid.h"
+#include "SteeringBehaviour.h"

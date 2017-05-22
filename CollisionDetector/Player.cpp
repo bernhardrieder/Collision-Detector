@@ -70,17 +70,18 @@ void Player::SetPosition(const Vector3& newPosition)
 {
 	SimpleMovable2D::SetPosition(newPosition);
 	if (m_followingCamera)
-		m_followingCamera->SetPosition(newPosition);
+		m_followingCamera->SetPosition(Vector3(newPosition.x, newPosition.y, m_followingCamera->GetPosition().z));
 }
 
 void Player::checkAndProcessKeyboardInput(const Keyboard* keyboard, float deltaTime)
 {
 	auto kb = keyboard->GetState();
-
+	
 	if (kb.A || kb.Left)
 		rotateLeft(deltaTime);
 	else if (kb.D || kb.Right)
 		rotateRight(deltaTime);
+
 	if (kb.W || kb.Up)
 		moveForward(deltaTime);
 	else if (kb.S || kb.Down)
