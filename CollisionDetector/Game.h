@@ -68,6 +68,7 @@ private:
     // Rendering loop timer.
     DX::StepTimer                                   m_timer;
 	Camera m_camera;
+	Player m_player;
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	std::unique_ptr<DirectX::BasicEffect> m_effect;
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;

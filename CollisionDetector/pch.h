@@ -71,3 +71,4 @@ namespace DX
 #include "WICTextureLoader.h"
 
 #include "Camera.h"
+#include "Player.h"
