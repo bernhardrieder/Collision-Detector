@@ -7,9 +7,10 @@ using namespace DirectX::SimpleMath;
 Asteroid::Asteroid()
 {
 	m_mersenneTwisterEngine = std::mt19937_64(m_randomDevice());
-	m_randomPositionDistribution = std::uniform_real_distribution<float>(-1000.f, 1000.f);
 	m_randomMovementSpeedDistribution = std::uniform_real_distribution<float>(10.f, 30.f);
 	m_randomRotationAngleDistribution = std::uniform_real_distribution<float>(-10.f, 10.f);
+
+	m_movementSpeed = m_randomMovementSpeedDistribution(m_mersenneTwisterEngine);
 }
 
 
@@ -36,14 +37,23 @@ void Asteroid::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceConte
 			VertexPositionColor::InputElementCount,
 			shaderByteCode, byteCodeLength,
 			m_inputLayout.ReleaseAndGetAddressOf()));
+
+	createConvexHullWithJarvisMarch(m_randomMovementSpeedDistribution); //todo: replace the distribution
 }
 
-void Asteroid::SetRandomValues()
+void Asteroid::SetRandomPosition(const std::uniform_real_distribution<float>& positionDistribution)
 {
-	SetPosition(Vector3(m_randomPositionDistribution(m_mersenneTwisterEngine), m_randomPositionDistribution(m_mersenneTwisterEngine), 0.f));
-	SetRotationAngle(m_randomRotationAngleDistribution(m_mersenneTwisterEngine));
-	m_movementSpeed = m_randomMovementSpeedDistribution(m_mersenneTwisterEngine);
-	SetScale(Vector3::One * 10);
+	SetPosition(Vector3(positionDistribution(m_mersenneTwisterEngine), positionDistribution(m_mersenneTwisterEngine), 0.f));
+}
+
+void Asteroid::SetRandomRotationAngle(const std::uniform_real_distribution<float>& rotationAngleDistribution)
+{
+	SetRotationAngle(rotationAngleDistribution(m_mersenneTwisterEngine));
+}
+
+void Asteroid::SetRandomScale(const std::uniform_real_distribution<float>& scaleDistribution)
+{
+	SetScale(Vector3::One * scaleDistribution(m_mersenneTwisterEngine));
 }
 
 void Asteroid::Update(const float& deltaTime)
@@ -64,13 +74,10 @@ void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
 
 	m_batch->Begin();
 
-	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Yellow);
-	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Yellow);
-	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Yellow);
 	auto& m = m_transform.Matrices;
 	m_effect->SetMatrices(m.Scale*m.Rotation*m.Translation, camera.GetView(), camera.GetProj());
 
-	m_batch->DrawTriangle(v1, v2, v3);
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_vertices[0], m_vertices.size());
 
 	m_batch->End();
 }
@@ -84,4 +91,20 @@ void Asteroid::updateMovementSpeedAndRotationChange(const float& deltaTime)
 		m_movementSpeed = m_randomMovementSpeedDistribution(m_mersenneTwisterEngine);
 		m_timeSinceLastMovementSpeedAndRotationChange = 0.f;
 	}
+}
+
+void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribution<float>& verticesDistribution)
+{
+	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::DarkGray);
+	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::DarkGray);
+	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::DarkGray);
+
+	m_vertices.push_back(v1);
+	m_vertices.push_back(v2);
+	m_vertices.push_back(v3);
+	m_vertices.push_back(v1);
+}
+
+void Asteroid::simpleWanderAlgorithm(const float& deltaTime)
+{
 }

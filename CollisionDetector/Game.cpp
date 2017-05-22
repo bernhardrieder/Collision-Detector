@@ -47,7 +47,9 @@ void Game::Initialize(HWND window, int width, int height)
 	for(int i = 0; i < m_numOfAsteroids; ++i)
 	{
 		m_asteroids[i].Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
-		m_asteroids[i].SetRandomValues();
+		m_asteroids[i].SetRandomPosition(std::uniform_real_distribution<float>(-1000, 1000));
+		m_asteroids[i].SetRandomRotationAngle(std::uniform_real_distribution<float>(0, 360));
+		m_asteroids[i].SetRandomScale(std::uniform_real_distribution<float>(5, 15));
 	}
 }
 
@@ -131,7 +133,7 @@ void Game::Render()
 void Game::Clear()
 {
     // Clear the views.
-    m_d3dContext->ClearRenderTargetView(m_renderTargetView.Get(), Colors::CornflowerBlue);
+    m_d3dContext->ClearRenderTargetView(m_renderTargetView.Get(), Colors::Black);
     m_d3dContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     m_d3dContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
