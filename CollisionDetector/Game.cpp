@@ -64,7 +64,7 @@ void Game::Update(DX::StepTimer const& timer)
 	checkAndProcessKeyboardInput(elapsedTime);
 	checkAndProcessMouseInput(elapsedTime);
 
-	m_player.Update(elapsedTime);
+	m_player.Update(elapsedTime, m_keyboard.get());
 }
 
 void Game::checkAndProcessKeyboardInput(const float& deltaTime)
@@ -104,13 +104,14 @@ void Game::Render()
 	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Yellow);
 	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Yellow);
 	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Yellow);
-	m_effect->SetWorld(Matrix::CreateScale(100) * Matrix::CreateRotationZ(0) * Matrix::CreateTranslation(0, 0, 0));
+	m_effect->SetWorld(Matrix::CreateScale(10) * Matrix::CreateRotationZ(0) * Matrix::CreateTranslation(0, 20, 0));
 
 	m_batch->DrawTriangle(v1, v2, v3);
 
 	m_batch->End();
 
 	m_player.Render(m_d3dContext.Get(), m_camera);
+	m_player.SetScale(Vector3::One * 10);
 
     Present();
 }

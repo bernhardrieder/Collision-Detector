@@ -35,9 +35,9 @@ void Player::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 			m_inputLayout.ReleaseAndGetAddressOf()));
 }
 
-void Player::Update(float deltaTime)
+void Player::Update(const float& deltaTime, const Keyboard* keyboard)
 {
-	checkAndProcessKeyboardInput(deltaTime);
+	checkAndProcessKeyboardInput(keyboard, deltaTime);
 }
 
 void Player::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
@@ -52,10 +52,10 @@ void Player::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
 
 	m_batch->Begin();
 
-	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Yellow);
-	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Yellow);
-	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Yellow);
-	m_effect->SetMatrices(Matrix::CreateRotationZ(m_rotationAngle)*Matrix::CreateTranslation(m_position), camera.GetView(), camera.GetProj());
+	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Red);
+	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Red);
+	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Red);
+	m_effect->SetMatrices(Matrix::CreateScale(m_scale)*Matrix::CreateRotationZ(m_rotationAngle)*Matrix::CreateTranslation(m_position), camera.GetView(), camera.GetProj());
 
 	m_batch->DrawTriangle(v1, v2, v3);
 
@@ -67,7 +67,7 @@ void Player::AttachFollowingCamera(Camera* camera)
 	m_followingCamera = camera;
 }
 
-void Player::SetPosition(const DirectX::SimpleMath::Vector3& newPosition)
+void Player::SetPosition(const Vector3& newPosition)
 {
 	m_position = newPosition;
 	if (m_followingCamera)
@@ -77,6 +77,7 @@ void Player::SetPosition(const DirectX::SimpleMath::Vector3& newPosition)
 void Player::SetRotationAngle(const float& newAngle)
 {
 	m_rotationAngle = newAngle;
+	Vector3::TransformNormal(Vector3::UnitY, Matrix::CreateRotationZ(m_rotationAngle), m_upVector);
 }
 
 void Player::SetMovementSpeed(const float& newMovementSpeed)
@@ -89,30 +90,33 @@ void Player::SetRotationSpeed(const float& newRotationSpeed)
 	m_rotationSpeed = newRotationSpeed;
 }
 
-void Player::checkAndProcessKeyboardInput(float deltaTime)
+void Player::SetScale(const DirectX::SimpleMath::Vector3& newScale)
 {
-	auto kb = m_keyboard->GetState();
+	m_scale = newScale;
+}
+
+void Player::checkAndProcessKeyboardInput(const Keyboard* keyboard, float deltaTime)
+{
+	auto kb = keyboard->GetState();
 
 	if (kb.A || kb.Left)
-		rotateLeft(deltaTime); //player rotation left
+		rotateLeft(deltaTime);
 	else if (kb.D || kb.Right)
-		rotateRight(deltaTime); //player roation right
+		rotateRight(deltaTime);
 	if (kb.W || kb.Up)
-		moveForward(deltaTime); //player forward
+		moveForward(deltaTime);
 	else if (kb.S || kb.Down)
-		moveBackwards(deltaTime); //player backwards
+		moveBackwards(deltaTime);
 }
 
 void Player::moveForward(const float& deltaTime)
 {
-	//todo: inspect Vector3::Up! -> ok for function?
-	move(Vector3::Up, m_movementSpeed, deltaTime);
+	move(m_upVector, m_movementSpeed, deltaTime);
 }
 
 void Player::moveBackwards(const float& deltaTime)
 {
-	//todo: inspect Vector3::Down! -> ok for function?
-	move(Vector3::Down, m_movementSpeed, deltaTime);
+	move(-m_upVector, m_movementSpeed, deltaTime);
 }
 
 void Player::move(const Vector3& normalizedDirectionVector, const float& speed, const float& deltaTime)
@@ -122,12 +126,12 @@ void Player::move(const Vector3& normalizedDirectionVector, const float& speed, 
 
 void Player::rotateLeft(const float& deltaTime)
 {
-	rotate(-m_rotationSpeed, deltaTime);
+	rotate(m_rotationSpeed, deltaTime);
 }
 
 void Player::rotateRight(const float& deltaTime)
 {
-	rotate(m_rotationSpeed, deltaTime);
+	rotate(-m_rotationSpeed, deltaTime);
 }
 
 void Player::rotate(const float& degrees, const float& deltaTime)
