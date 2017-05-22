@@ -8,10 +8,8 @@ public:
 	Asteroid();
 	~Asteroid();
 
-	void Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	void SetRandomPosition(const std::uniform_real_distribution<float>& positionDistribution);
-	void SetRandomRotationAngle(const std::uniform_real_distribution<float>& rotationAngleDistribution);
-	void SetRandomScale(const std::uniform_real_distribution<float>& scaleDistribution);
+	void InitializeRenderable(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const std::uniform_real_distribution<float>& verticesDistribution);
+	void InitializeTransform(const std::uniform_real_distribution<float>& positionDistribution, const std::uniform_real_distribution<float>& rotationAngleDistribution, const std::uniform_real_distribution<float>& scaleDistribution);
 	void Update(const float& deltaTime);
 	void Render(ID3D11DeviceContext* deviceContext, const Camera& camera);
 

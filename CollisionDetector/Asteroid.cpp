@@ -18,7 +18,7 @@ Asteroid::~Asteroid()
 {
 }
 
-void Asteroid::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+void Asteroid::InitializeRenderable(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const std::uniform_real_distribution<float>& verticesDistribution)
 {
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(deviceContext);
 	m_states = std::make_unique<CommonStates>(device);
@@ -38,21 +38,13 @@ void Asteroid::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceConte
 			shaderByteCode, byteCodeLength,
 			m_inputLayout.ReleaseAndGetAddressOf()));
 
-	createConvexHullWithJarvisMarch(m_randomMovementSpeedDistribution); //todo: replace the distribution
+	createConvexHullWithJarvisMarch(verticesDistribution);
 }
 
-void Asteroid::SetRandomPosition(const std::uniform_real_distribution<float>& positionDistribution)
+void Asteroid::InitializeTransform(const std::uniform_real_distribution<float>& positionDistribution, const std::uniform_real_distribution<float>& rotationAngleDistribution, const std::uniform_real_distribution<float>& scaleDistribution)
 {
 	SetPosition(Vector3(positionDistribution(m_mersenneTwisterEngine), positionDistribution(m_mersenneTwisterEngine), 0.f));
-}
-
-void Asteroid::SetRandomRotationAngle(const std::uniform_real_distribution<float>& rotationAngleDistribution)
-{
 	SetRotationAngle(rotationAngleDistribution(m_mersenneTwisterEngine));
-}
-
-void Asteroid::SetRandomScale(const std::uniform_real_distribution<float>& scaleDistribution)
-{
 	SetScale(Vector3::One * scaleDistribution(m_mersenneTwisterEngine));
 }
 

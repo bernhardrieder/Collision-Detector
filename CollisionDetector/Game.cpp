@@ -44,12 +44,15 @@ void Game::Initialize(HWND window, int width, int height)
 	m_player.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
 	m_player.SetScale(Vector3::One * 10);
 	m_player.AttachFollowingCamera(&m_camera);
+
+	auto randomPositionDistribution = std::uniform_real_distribution<float>(-1000, 1000);
+	auto randomRotationAngleDistribution = std::uniform_real_distribution<float>(0, 360);
+	auto randomScaleDistribution = std::uniform_real_distribution<float>(5, 15);
+	auto randomVerticesDistribution = std::uniform_real_distribution<float>(-1, 1);
 	for(int i = 0; i < m_numOfAsteroids; ++i)
 	{
-		m_asteroids[i].Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
-		m_asteroids[i].SetRandomPosition(std::uniform_real_distribution<float>(-1000, 1000));
-		m_asteroids[i].SetRandomRotationAngle(std::uniform_real_distribution<float>(0, 360));
-		m_asteroids[i].SetRandomScale(std::uniform_real_distribution<float>(5, 15));
+		m_asteroids[i].InitializeRenderable(m_d3dDevice.Get(), m_d3dContext.Get(), randomVerticesDistribution);
+		m_asteroids[i].InitializeTransform(randomPositionDistribution, randomRotationAngleDistribution, randomScaleDistribution);
 	}
 }
 
@@ -103,26 +106,9 @@ void Game::Render()
     Clear();
 
     // TODO: Add your rendering code here.
-	m_d3dContext->OMSetBlendState( m_states->Opaque(), nullptr, 0xFFFFFFFF );
-	m_d3dContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
-	m_d3dContext->RSSetState(m_states->CullNone());
-
-	m_effect->Apply(m_d3dContext.Get());
-
-	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
-
-	m_batch->Begin();
-
-	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Yellow);
-	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Yellow);
-	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Yellow);
-	m_effect->SetMatrices(Matrix::CreateScale(10) * Matrix::CreateRotationZ(0) * Matrix::CreateTranslation(0, 20, 0), m_camera.GetView(), m_camera.GetProj());
-
-	m_batch->DrawTriangle(v1, v2, v3);
-
-	m_batch->End();
 
 	m_player.Render(m_d3dContext.Get(), m_camera);
+
 	for (int i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Render(m_d3dContext.Get(), m_camera);
 
@@ -297,24 +283,6 @@ void Game::initializeDeviceDependentObjects()
 {
 	m_camera.SetPosition(0.0f, 0.0f, -200.f);
 	m_camera.LookAt(Vector3::Up, Vector3(0, 0, 0) - m_camera.GetPosition());
-
-	m_states = std::make_unique<CommonStates>(m_d3dDevice.Get());
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(m_d3dContext.Get());
-
-	/******************* simple shader *******************/
-	m_effect = std::make_unique<BasicEffect>(m_d3dDevice.Get());
-	m_effect->SetVertexColorEnabled(true);
-
-	void const* shaderByteCode;
-	size_t byteCodeLength;
-
-	m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
-
-	DX::ThrowIfFailed(
-		m_d3dDevice->CreateInputLayout(VertexPositionColor::InputElements,
-			VertexPositionColor::InputElementCount,
-			shaderByteCode, byteCodeLength,
-			m_inputLayout.ReleaseAndGetAddressOf()));
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -454,11 +422,6 @@ void Game::OnDeviceLost()
     m_d3dContext.Reset();
     m_d3dDevice1.Reset();
     m_d3dDevice.Reset();
-	
-	m_states.reset();
-	m_effect.reset();
-	m_batch.reset();
-	m_inputLayout.Reset();
 
     CreateDevice();
 
