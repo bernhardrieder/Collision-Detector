@@ -54,7 +54,8 @@ void Player::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
 	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Red);
 	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Red);
 	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Red);
-	m_effect->SetMatrices(Matrix::CreateScale(m_transform.Scale)*Matrix::CreateRotationZ(m_transform.RotationAngle)*Matrix::CreateTranslation(m_transform.Position), camera.GetView(), camera.GetProj());
+	auto& m = m_transform.Matrices;
+	m_effect->SetMatrices(m.Scale*m.Rotation*m.Translation, camera.GetView(), camera.GetProj());
 
 	m_batch->DrawTriangle(v1, v2, v3);
 

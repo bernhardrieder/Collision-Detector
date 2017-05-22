@@ -5,7 +5,15 @@ struct Transform
 	DirectX::SimpleMath::Vector3 Position = DirectX::SimpleMath::Vector3::Zero;
 	float RotationAngle = 0;
 	DirectX::SimpleMath::Vector3 Scale = DirectX::SimpleMath::Vector3::One;
+
+	struct Matrices
+	{
+		DirectX::SimpleMath::Matrix Translation;
+		DirectX::SimpleMath::Matrix Rotation;
+		DirectX::SimpleMath::Matrix Scale;
+	} Matrices;
 };
+
 class SimpleMovable2D
 {
 public:
