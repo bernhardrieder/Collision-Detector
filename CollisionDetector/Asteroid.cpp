@@ -3,16 +3,23 @@
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+using namespace SteeringBehaviours;
 
 Asteroid::Asteroid()
 {
 	m_mersenneTwisterEngine = std::mt19937_64(m_randomDevice());
-	m_randomMovementSpeedDistribution = std::uniform_real_distribution<float>(10.f, 30.f);
-	m_randomRotationAngleDistribution = std::uniform_real_distribution<float>(-10.f, 10.f);
+	m_randomRotationAngleDistribution = std::uniform_real_distribution<float>(-1.f, 1.f);
+	m_randomRotationSpeed = m_randomRotationAngleDistribution(m_mersenneTwisterEngine);
 
-	m_movementSpeed = m_randomMovementSpeedDistribution(m_mersenneTwisterEngine);
+	auto& mt = m_mersenneTwisterEngine;
+	auto maxAngularAccelerationDist = std::uniform_real_distribution<float>(5.f, 100.f);
+	auto maxRotationDist = std::uniform_real_distribution<float>(5.f, 100.f);
+	auto wanderOffsetDist = std::uniform_real_distribution<float>(5.f, 100.f);
+	auto wanderRadiusDist = std::uniform_real_distribution<float>(5.f, 100.f);
+	auto wanderRateDist = std::uniform_real_distribution<float>(5.f, 100.f);
+	auto maxLinearAccelerationDist = std::uniform_real_distribution<float>(5.f, 50.f);
+	m_wanderBehaviour = std::make_unique<Wander>(&m_kinematic, maxAngularAccelerationDist(mt), maxRotationDist(mt), 0.1f, 10, 0.1f, wanderOffsetDist(mt), wanderRadiusDist(mt), wanderRateDist(mt), maxLinearAccelerationDist(mt));
 }
-
 
 Asteroid::~Asteroid()
 {
@@ -50,8 +57,8 @@ void Asteroid::InitializeTransform(const std::uniform_real_distribution<float>& 
 
 void Asteroid::Update(const float& deltaTime)
 {
-	//todo: rotate asteroid without changing flight direction!!
 	simpleWanderAlgorithm(deltaTime);
+	updateRandomRotation(deltaTime);
 }
 
 void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
@@ -74,15 +81,15 @@ void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
 	m_batch->End();
 }
 
-void Asteroid::updateMovementSpeedAndRotationChange(const float& deltaTime)
+void Asteroid::updateRandomRotation(const float& deltaTime)
 {
 	m_timeSinceLastMovementSpeedAndRotationChange += deltaTime;
 	if(m_timeSinceLastMovementSpeedAndRotationChange >= m_randomMovementSpeedAndRotationChangeTimeThreshold)
 	{
-		rotate(m_randomRotationAngleDistribution(m_mersenneTwisterEngine), deltaTime);
-		m_movementSpeed = m_randomMovementSpeedDistribution(m_mersenneTwisterEngine);
+		m_randomRotationSpeed = m_randomRotationAngleDistribution(m_mersenneTwisterEngine);
 		m_timeSinceLastMovementSpeedAndRotationChange = 0.f;
 	}
+	rotate(m_randomRotationSpeed, deltaTime);
 }
 
 void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribution<float>& verticesDistribution)
@@ -102,6 +109,14 @@ void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribut
 
 void Asteroid::simpleWanderAlgorithm(const float& deltaTime)
 {
-	updateMovementSpeedAndRotationChange(deltaTime);
-	moveForward(deltaTime);
+	m_kinematic.Position = m_transform.Position;
+	
+	SteeringOutput steeringOutput;
+	m_wanderBehaviour->GetSteering(&steeringOutput);
+	steeringOutput.Linear.z = 0.f;
+
+	m_kinematic.Integrate(steeringOutput, deltaTime);
+	m_kinematic.TrimMaxSpeed(25);
+
+	SetPosition(m_kinematic.Position);
 }

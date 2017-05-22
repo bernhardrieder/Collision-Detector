@@ -15,6 +15,8 @@
     <ClInclude Include="SimpleMovable2D.h" />
     <ClInclude Include="Asteroid.h" />
     <ClInclude Include="JarvisMarch.h" />
+    <ClInclude Include="SteeringBehaviour.h" />
+    <ClInclude Include="SteeringBehaviourHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -25,6 +27,8 @@
     <ClCompile Include="SimpleMovable2D.cpp" />
     <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="JarvisMarch.cpp" />
+    <ClCompile Include="SteeringBehaviour.cpp" />
+    <ClCompile Include="SteeringBehaviourHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

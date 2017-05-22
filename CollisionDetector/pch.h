@@ -77,6 +77,6 @@ namespace DX
 #include "JarvisMarch.h"
 #include "Camera.h"
 #include "Player.h"
-#include "SimpleMovable2D.h";
+#include "SimpleMovable2D.h"
 #include "Asteroid.h"
 #include "SteeringBehaviour.h"

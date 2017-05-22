@@ -82,7 +82,7 @@ void Face::GetSteering(SteeringOutput* output)
 
 	// put the target together
 	Align::Target = Target;
-	Align::Target->Orientation = std::atan2(-direction.x, direction.z); //todo: check if direction.z is correct -> if not, test direction.y
+	Align::Target->Orientation = std::atan2(-direction.x, direction.y);
 
 	// 2. delegate to align
 	Align::GetSteering(output);
@@ -102,7 +102,7 @@ void Wander::GetSteering(SteeringOutput* output)
 	// 1. calculate the target to delegate to face
 
 	// update the wander orientation
-	WanderOrientation += m_binomialDistribution(m_mersenneTwisterEngine) * WanderRate;
+	WanderOrientation += m_randomDistribution(m_mersenneTwisterEngine) * WanderRate;
 
 	Kinematic target;
 	// calculate the combined target orientation
@@ -115,7 +115,7 @@ void Wander::GetSteering(SteeringOutput* output)
 	target.Position += WanderRadius * target.GetOrientationAsVector();
 
 	// 2. delegate to face
-	Target = &target;
+	Face::Target = &target;
 	Face::GetSteering(output);
 
 	// 3. now set the linear acceleration to be at full acceleration in the direction of the orientation
@@ -125,5 +125,5 @@ void Wander::GetSteering(SteeringOutput* output)
 void Wander::initializeRandomBinomial()
 {
 	m_mersenneTwisterEngine = std::mt19937_64(m_randomDevice());
-	m_binomialDistribution = std::binomial_distribution<float>(-1, 1);
+	m_randomDistribution = std::uniform_real_distribution<float>(-1, 1);
 }

@@ -73,7 +73,7 @@ namespace SteeringBehaviours
 		//todo: initialize;
 		std::random_device m_randomDevice;
 		std::mt19937_64 m_mersenneTwisterEngine;
-		std::binomial_distribution<float> m_binomialDistribution;
+		std::uniform_real_distribution<float> m_randomDistribution;
 
 		void initializeRandomBinomial();
 	};

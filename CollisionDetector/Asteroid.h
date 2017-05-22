@@ -1,5 +1,6 @@
 #pragma once
 #include "SimpleMovable2D.h"
+#include "SteeringBehaviour.h"
 
 class Asteroid :
 	public SimpleMovable2D
@@ -14,12 +15,9 @@ public:
 	void Render(ID3D11DeviceContext* deviceContext, const Camera& camera);
 
 private:
-	void updateMovementSpeedAndRotationChange(const float& deltaTime);
+	void updateRandomRotation(const float& deltaTime);
 	void createConvexHullWithJarvisMarch(const std::uniform_real_distribution<float>& verticesDistribution);
 	void simpleWanderAlgorithm(const float& deltaTime);
-
-	float m_timeSinceLastMovementSpeedAndRotationChange = 0.f;
-	float m_randomMovementSpeedAndRotationChangeTimeThreshold = 1.f;
 
 	//rendering
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
@@ -32,7 +30,12 @@ private:
 	std::random_device m_randomDevice;
 	std::mt19937_64 m_mersenneTwisterEngine;
 	std::uniform_real_distribution<float> m_randomRotationAngleDistribution;
-	std::uniform_real_distribution<float> m_randomMovementSpeedDistribution;
+	float m_randomRotationSpeed = 0;
+	float m_timeSinceLastMovementSpeedAndRotationChange = 0.f;
+	float m_randomMovementSpeedAndRotationChangeTimeThreshold = 5.f;
 
+	//steering wander
+	std::shared_ptr<SteeringBehaviours::Wander> m_wanderBehaviour = nullptr;
+	SteeringBehaviours::Kinematic m_kinematic;
 };
 

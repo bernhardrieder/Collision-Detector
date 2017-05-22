@@ -4,8 +4,8 @@ namespace SteeringBehaviours
 {
 	struct SteeringOutput
 	{
-		DirectX::SimpleMath::Vector3 Linear;
-		float Angular;
+		DirectX::SimpleMath::Vector3 Linear = DirectX::SimpleMath::Vector3::Zero;
+		float Angular = 0;
 
 		SteeringOutput() : Linear(DirectX::SimpleMath::Vector3::Zero), Angular(0) {}
 		SteeringOutput(const DirectX::SimpleMath::Vector3& linear, const float& angular) : Linear(linear), Angular(angular) {}
@@ -20,8 +20,8 @@ namespace SteeringBehaviours
 
 	struct Location
 	{
-		DirectX::SimpleMath::Vector3 Position;
-		float Orientation;
+		DirectX::SimpleMath::Vector3 Position = DirectX::SimpleMath::Vector3::Zero;
+		float Orientation = 0;
 
 		Location() : Position(DirectX::SimpleMath::Vector3::Zero), Orientation(0.0f) {}
 		Location(const DirectX::SimpleMath::Vector3& position) : Position(position), Orientation(0.0f) {}
@@ -38,8 +38,8 @@ namespace SteeringBehaviours
 
 	struct Kinematic : Location
 	{
-		DirectX::SimpleMath::Vector3 Velocity;
-		float Rotation;
+		DirectX::SimpleMath::Vector3 Velocity = DirectX::SimpleMath::Vector3::Zero;
+		float Rotation = 0;
 
 		Kinematic() : Location(), Velocity(0, 0, 0), Rotation(0) {}
 		Kinematic(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& velocity) : Location(position), Velocity(velocity), Rotation(0) {}
