@@ -6,7 +6,6 @@ using namespace DirectX::SimpleMath;
 
 Player::Player()
 {
-
 }
 
 
@@ -107,16 +106,21 @@ void Player::checkAndProcessKeyboardInput(const Keyboard* keyboard, float deltaT
 		moveForward(deltaTime);
 	else if (kb.S || kb.Down)
 		moveBackwards(deltaTime);
+
+	if (!kb.IsKeyUp(Keyboard::Keys::LeftShift))
+		m_speedUpFactor = 5;
+	else
+		m_speedUpFactor = 1;
 }
 
 void Player::moveForward(const float& deltaTime)
 {
-	move(m_upVector, m_movementSpeed, deltaTime);
+	move(m_upVector, m_movementSpeed*m_speedUpFactor, deltaTime);
 }
 
 void Player::moveBackwards(const float& deltaTime)
 {
-	move(-m_upVector, m_movementSpeed, deltaTime);
+	move(-m_upVector, m_movementSpeed*m_speedUpFactor, deltaTime);
 }
 
 void Player::move(const Vector3& normalizedDirectionVector, const float& speed, const float& deltaTime)

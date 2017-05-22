@@ -28,6 +28,7 @@ private:
 	float m_movementSpeed = 40.f;
 	DirectX::SimpleMath::Vector3 m_upVector = DirectX::SimpleMath::Vector3::Up;
 	float m_rotationSpeed = 3.f;
+	int m_speedUpFactor = 1;
 
 	DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3::Zero;
 	float m_rotationAngle = 0;
@@ -40,6 +41,5 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_effect;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::CommonStates> m_states;
-
 };
 
