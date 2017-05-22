@@ -42,7 +42,8 @@ void Game::Initialize(HWND window, int width, int height)
 	m_mouse = std::make_unique<Mouse>();
 	m_mouse->SetWindow(window);
 	m_player.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
-	
+	m_player.SetScale(Vector3::One * 10);
+	m_player.AttachFollowingCamera(&m_camera);
 }
 
 // Executes the basic game loop.
@@ -65,6 +66,8 @@ void Game::Update(DX::StepTimer const& timer)
 	checkAndProcessMouseInput(elapsedTime);
 
 	m_player.Update(elapsedTime, m_keyboard.get());
+
+	m_camera.UpdateViewMatrix();
 }
 
 void Game::checkAndProcessKeyboardInput(const float& deltaTime)
@@ -104,14 +107,13 @@ void Game::Render()
 	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Yellow);
 	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Yellow);
 	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Yellow);
-	m_effect->SetWorld(Matrix::CreateScale(10) * Matrix::CreateRotationZ(0) * Matrix::CreateTranslation(0, 20, 0));
+	m_effect->SetMatrices(Matrix::CreateScale(10) * Matrix::CreateRotationZ(0) * Matrix::CreateTranslation(0, 20, 0), m_camera.GetView(), m_camera.GetProj());
 
 	m_batch->DrawTriangle(v1, v2, v3);
 
 	m_batch->End();
 
 	m_player.Render(m_d3dContext.Get(), m_camera);
-	m_player.SetScale(Vector3::One * 10);
 
     Present();
 }
@@ -284,7 +286,6 @@ void Game::initializeDeviceDependentObjects()
 {
 	m_camera.SetPosition(0.0f, 0.0f, -200.f);
 	m_camera.LookAt(Vector3::Up, Vector3(0, 0, 0) - m_camera.GetPosition());
-	m_camera.UpdateViewMatrix();
 
 	m_states = std::make_unique<CommonStates>(m_d3dDevice.Get());
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(m_d3dContext.Get());
@@ -428,8 +429,6 @@ void Game::CreateResources()
 void Game::initializeWindowSizeDependentObjects()
 {
 	m_camera.SetOrthographicLens(m_outputWidth, m_outputHeight, 0.1f, 1000.f);
-	m_effect->SetProjection(m_camera.GetProj());
-	m_effect->SetView(m_camera.GetView());
 }
 
 void Game::OnDeviceLost()
