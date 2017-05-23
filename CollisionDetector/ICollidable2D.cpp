@@ -4,6 +4,21 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
+uint64_t ICollidable2D::s_ids = -1;
+
+void ICollidable2D::initialize()
+{
+	m_id = ++s_ids;
+	createBoundingSphere();
+	createAABB();
+	createOBB();
+}
+
+uint64_t ICollidable2D::GetID() const
+{
+	return m_id;
+}
+
 void ICollidable2D::createBoundingSphere()
 {
 	auto& vertices2d = GetVertices();
