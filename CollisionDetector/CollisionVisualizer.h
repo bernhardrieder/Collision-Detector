@@ -15,19 +15,17 @@ private:
 	void initializeAABB();
 	void initializeOBB();
 
-	void addEffect(ID3D11Device* device, const uint64_t& effectIndex);
-
-	void drawBoundingSphere(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect);
-	void drawAABB(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect);
-	void drawOBB(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect);
-	void drawMinkovskySum(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect);
+	void drawBoundingSphere(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawAABB(const CollisionObject& obj, const Camera& camera);
+	void drawOBB(const CollisionObject& obj, const Camera& camera);
+	void drawMinkovskySum(const CollisionObject& obj, const Camera& camera);
 
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesLineStrip(const float& radius) const;
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesTriangleFan(const DirectX::SimpleMath::Vector2& center, const float& radius) const;
 	void createCircleVertices(std::vector<DirectX::SimpleMath::Vector2>& vertices, const float& radius, const float& resolution) const;
 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
-	std::vector<std::unique_ptr<DirectX::BasicEffect>> m_effects;
+	std::unique_ptr<DirectX::BasicEffect> m_effect;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::CommonStates> m_states;
 

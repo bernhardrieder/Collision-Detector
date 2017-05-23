@@ -70,13 +70,12 @@ void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
 	deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
 	deviceContext->RSSetState(m_states->CullNone());
 
-	m_effect->Apply(deviceContext);
-
 	deviceContext->IASetInputLayout(m_inputLayout.Get());
 
-	m_batch->Begin();
-
 	m_effect->SetMatrices(m_transform.Matrices.CalculateWorld(), camera.GetView(), camera.GetProj());
+	m_effect->Apply(deviceContext);
+
+	m_batch->Begin();
 
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_vertices[0], m_vertices.size());
 

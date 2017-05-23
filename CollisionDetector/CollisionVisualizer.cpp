@@ -19,13 +19,13 @@ void CollisionVisualizer::Initialize(ID3D11Device* device, ID3D11DeviceContext* 
 	m_states = std::make_unique<CommonStates>(device);
 
 	/******************* simple shader *******************/
-	for(size_t i = 0; i < 500; ++i)
-		addEffect(device, i);
+	m_effect = std::make_unique<BasicEffect>(device);
+	m_effect->SetVertexColorEnabled(true);
 
 	void const* shaderByteCode;
 	size_t byteCodeLength;
 
-	m_effects[1]->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+	m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 
 	DX::ThrowIfFailed(
 		device->CreateInputLayout(VertexPositionColor::InputElements,
@@ -48,23 +48,13 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 
 	//for (uint64_t i = 0; i < collidables.size(); ++i)
 	//{
-	//	if (m_effects.size() <= i)
-	//		addEffect(device, i);
-	//	m_effects[i]->Apply(deviceContext);
-
 	//	m_batch->Begin();
-
-	//	drawBoundingSphere(collidables[i], camera, m_effects[i].get());
-
+	//	drawBoundingSphere(collidables[i], camera, deviceContext);
 	//	m_batch->End();
 	//}
 
 	for (uint64_t i = 0; i < collidables.size(); ++i)
 	{
-		if (m_effects.size() <= i)
-			addEffect(device, i);
-		m_effects[i]->Apply(deviceContext);
-
 		if (!collidables[i].HasCollision())
 			continue;
 
@@ -74,16 +64,16 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 			switch(collision.LastDetectedType)
 			{
 			case BoundingVolume: 
-				drawBoundingSphere(collidables[i], camera, m_effects[i].get());
+				drawBoundingSphere(collidables[i], camera, deviceContext);
 				break;
 			case AABB: 
-				drawAABB(collidables[i], camera, m_effects[i].get());
+				drawAABB(collidables[i], camera);
 				break;
 			case OBB: 
-				drawOBB(collidables[i], camera, m_effects[i].get());
+				drawOBB(collidables[i], camera);
 				break;
 			case MinkovskySum: 
-				drawMinkovskySum(collidables[i], camera, m_effects[i].get());
+				drawMinkovskySum(collidables[i], camera);
 				break;
 			case None: 
 			default: break;
@@ -91,7 +81,6 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 		}
 		m_batch->End();
 	}
-
 }
 
 void CollisionVisualizer::initializeBoundingSphere()
@@ -111,33 +100,28 @@ void CollisionVisualizer::initializeOBB()
 	//todo
 }
 
-void CollisionVisualizer::addEffect(ID3D11Device* device, const uint64_t& effectIndex)
-{
-	m_effects.push_back(std::make_unique<BasicEffect>(device));
-	m_effects[effectIndex]->SetVertexColorEnabled(true);
-}
-
-void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect)
+void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
 	Matrix translation = Matrix::CreateTranslation(obj.Object->GetBoundingSphereTransformed().Center);
 	Matrix scale = Matrix::CreateScale(obj.Object->GetBoundingSphereTransformed().Radius);
 
-	effect->SetMatrices(scale*Matrix::Identity*translation, camera.GetView(), camera.GetProj());
+	m_effect->SetMatrices(scale*Matrix::Identity*translation, camera.GetView(), camera.GetProj());
+	m_effect->Apply(deviceContext);
 
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_verticesBoundingSphere[0], m_verticesBoundingSphere.size());
 }
 
-void CollisionVisualizer::drawAABB(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect)
+void CollisionVisualizer::drawAABB(const CollisionObject& obj, const Camera& camera)
 {
 	//todo
 }
 
-void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect)
+void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& camera)
 {
 	//todo
 }
 
-void CollisionVisualizer::drawMinkovskySum(const CollisionObject& obj, const Camera& camera, DirectX::BasicEffect* effect)
+void CollisionVisualizer::drawMinkovskySum(const CollisionObject& obj, const Camera& camera)
 {
 	//todo
 }
@@ -145,7 +129,7 @@ void CollisionVisualizer::drawMinkovskySum(const CollisionObject& obj, const Cam
 std::vector<Vector2> CollisionVisualizer::createCircleVerticesLineStrip(const float& radius) const
 {
 	std::vector<Vector2> vertices;
-	createCircleVertices(vertices, radius, 100);
+	createCircleVertices(vertices, radius, 50);
 	vertices.push_back(vertices[0]);
 	return vertices;
 }
@@ -154,7 +138,7 @@ std::vector<Vector2> CollisionVisualizer::createCircleVerticesTriangleFan(const 
 {
 	std::vector<Vector2> vertices;
 	vertices.push_back(center);
-	createCircleVertices(vertices, radius, 100);
+	createCircleVertices(vertices, radius, 50);
 	return vertices;
 }
 
