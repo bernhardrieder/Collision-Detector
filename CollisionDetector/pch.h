@@ -34,6 +34,7 @@
 #include <d3d11_1.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include <DirectXCollision.h>
 
 #include <algorithm>
 #include <exception>
@@ -80,3 +81,5 @@ namespace DX
 #include "SimpleMovable2D.h"
 #include "Asteroid.h"
 #include "SteeringBehaviour.h"
+#include "CollisionVisualizer.h"
+#include "ICollidable2D.h"

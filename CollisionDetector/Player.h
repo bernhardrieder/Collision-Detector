@@ -1,7 +1,10 @@
 #pragma once
 #include "SimpleMovable2D.h"
+#include "ICollidable2D.h"
 
-class Player : public SimpleMovable2D
+class Player : 
+	public SimpleMovable2D, 
+	public ICollidable2D
 {
 public:
 	Player();

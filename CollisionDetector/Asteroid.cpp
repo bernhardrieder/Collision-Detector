@@ -95,7 +95,7 @@ void Asteroid::updateRandomRotation(const float& deltaTime)
 void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribution<float>& verticesDistribution)
 {
 	std::vector<Vector2> randomVertices;
-	size_t randomVerticesCount = 8;
+	size_t randomVerticesCount = 3;
 
 	for (size_t i = 0; i < randomVerticesCount; ++i)
 		randomVertices.push_back(Vector2(verticesDistribution(m_mersenneTwisterEngine), verticesDistribution(m_mersenneTwisterEngine)));
