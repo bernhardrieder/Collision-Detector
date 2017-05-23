@@ -32,6 +32,10 @@ void CollisionVisualizer::Initialize(ID3D11Device* device, ID3D11DeviceContext* 
 			VertexPositionColor::InputElementCount,
 			shaderByteCode, byteCodeLength,
 			m_inputLayout.ReleaseAndGetAddressOf()));
+
+	initializeBoundingSphere();
+	initializeAABB();
+	initializeOBB();
 }
 
 void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables, ID3D11DeviceContext* deviceContext, const Camera& camera)
@@ -46,32 +50,38 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 
 	m_batch->Begin();
 
-	for(auto& obj : collidables)
+
+	for (auto& obj : collidables)
 	{
-		if (!obj.HasCollision())
-			continue;
-		for(auto& collision : obj.Collisions)
-		{
-			switch(collision.LastDetectedType)
-			{
-			case BoundingVolume: 
-				drawBoundingSphere(obj, camera); 
-				break;
-			case AABB: 
-				drawAABB(obj, camera); 
-				break;
-			case OBB: 
-				drawOBB(obj, camera); 
-				break;
-			case MinkovskySum: 
-				drawMinkovskySum(obj, camera); 
-				break;
-			case None: 
-			default: break;
-			}
-			
-		}
+		drawBoundingSphere(obj, camera);
 	}
+
+	//for(auto& obj : collidables)
+	//{
+	//	if (!obj.HasCollision())
+	//		continue;
+	//	for(auto& collision : obj.Collisions)
+	//	{
+	//		switch(collision.LastDetectedType)
+	//		{
+	//		case BoundingVolume: 
+	//			drawBoundingSphere(obj, camera); 
+	//			break;
+	//		case AABB: 
+	//			drawAABB(obj, camera); 
+	//			break;
+	//		case OBB: 
+	//			drawOBB(obj, camera); 
+	//			break;
+	//		case MinkovskySum: 
+	//			drawMinkovskySum(obj, camera); 
+	//			break;
+	//		case None: 
+	//		default: break;
+	//		}
+	//		
+	//	}
+	//}
 
 	m_batch->End();
 }
@@ -95,7 +105,11 @@ void CollisionVisualizer::initializeOBB()
 
 void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const Camera& camera)
 {
-	m_effect->SetMatrices(obj.Object->GetLastAppliedWorldMatrix(), camera.GetView(), camera.GetProj());
+	Matrix translation = Matrix::CreateTranslation(obj.Object->GetBoundingSphereTransformed().Center);
+	Matrix scale = Matrix::CreateScale(obj.Object->GetBoundingSphereTransformed().Radius);
+
+	m_effect->SetMatrices(scale*Matrix::Identity*translation, camera.GetView(), camera.GetProj());
+
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_verticesBoundingSphere[0], m_verticesBoundingSphere.size());
 }
 

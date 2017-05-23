@@ -29,10 +29,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::CommonStates> m_states;
 
-	const DirectX::XMVECTORF32 m_boundingSphereColor = DirectX::Colors::Red;
+	const DirectX::XMVECTORF32 m_boundingSphereColor = DirectX::Colors::Yellow;
 	const DirectX::XMVECTORF32 m_aabbColor = DirectX::Colors::Blue;
 	const DirectX::XMVECTORF32 m_obbColor = DirectX::Colors::Green;
-	const DirectX::XMVECTORF32 m_minkovskySumColor = DirectX::Colors::Blue;
+	const DirectX::XMVECTORF32 m_minkovskySumColor = DirectX::Colors::White;
 
 	std::vector<DirectX::VertexPositionColor> m_verticesBoundingSphere;
 	std::vector<DirectX::VertexPositionColor> m_verticesAABB;

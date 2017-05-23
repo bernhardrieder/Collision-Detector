@@ -34,3 +34,13 @@ void Collideable2D::createBoundingSphere()
 		vertices3d.push_back(Vector3(vertex.x, vertex.y, 0.f));
 	DirectX::BoundingSphere::CreateFromPoints(m_boundingSphere.Original, vertices3d.size(), &vertices3d[0], sizeof(Vector3));
 }
+
+void Collideable2D::createAABB()
+{
+	//todo
+}
+
+void Collideable2D::createOBB()
+{
+	//todo
+}

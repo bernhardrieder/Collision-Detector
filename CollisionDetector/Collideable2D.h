@@ -7,11 +7,11 @@ public:
 
 	auto GetID() const -> const uint64_t&;
 	const DirectX::BoundingSphere& GetBoundingSphereTransformed() const { return m_boundingSphere.Transformed; }
-	void* const GetAABB() {}
-	void* const GetOBB() {}
+	void* GetAABB() {}
+	void* GetOBB() {}
 
 	virtual const std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const = 0;
-	auto GetLastAppliedWorldMatrix() const -> const DirectX::SimpleMath::Matrix& { return m_lastAppliedWorldMatrix; }
+	auto GetLastAppliedWorldMatrix() const -> const DirectX::SimpleMath::Matrix&{ return m_lastAppliedWorldMatrix; }
 
 protected:
 	void initializeCollider();

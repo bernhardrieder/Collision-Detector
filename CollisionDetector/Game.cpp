@@ -82,6 +82,8 @@ void Game::Update(DX::StepTimer const& timer)
 	for (int i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Update(elapsedTime);
 	
+	m_collisionDetector.DetectAndUpdateCollisionsOnAllRegisteredObjects();
+
 	m_camera.UpdateViewMatrix();
 }
 
@@ -114,6 +116,8 @@ void Game::Render()
 
 	for (size_t i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Render(m_d3dContext.Get(), m_camera);
+
+	m_collisionVisualizer.Render(m_collisionDetector.GetAllRegisteredCollisionObjects(), m_d3dContext.Get(), m_camera);
 
     Present();
 }
@@ -410,7 +414,7 @@ void Game::CreateResources()
 
 void Game::initializeWindowSizeDependentObjects()
 {
-	m_camera.SetOrthographicLens(m_outputWidth, m_outputHeight, 0.f, 1000.f);
+	m_camera.SetOrthographicLens(static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight), 0.f, 1000.f);
 	m_camera.UpdateViewMatrix();
 }
 
