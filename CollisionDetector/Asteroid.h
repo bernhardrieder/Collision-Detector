@@ -1,11 +1,11 @@
 #pragma once
 #include "SimpleMovable2D.h"
 #include "SteeringBehaviour.h"
-#include "ICollidable2D.h"
+#include "Collider2D.h"
 
 class Asteroid :
 	public SimpleMovable2D, 
-	public ICollidable2D
+	public Collider2D
 {
 public:
 	Asteroid();

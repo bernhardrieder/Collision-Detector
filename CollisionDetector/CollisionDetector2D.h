@@ -2,7 +2,7 @@
 
 enum CollisionType
 {
-	None,
+	None = 0,
 	BoundingVolume,
 	AABB,
 	OBB,
@@ -11,17 +11,17 @@ enum CollisionType
 
 struct Collision2D
 {
-	Collision2D(const ICollidable2D* const partner) : Partner(partner) {};
+	Collision2D(const Collider2D* const partner) : Partner(partner) {};
 
-	const ICollidable2D* const Partner = nullptr;
+	const Collider2D* const Partner = nullptr;
 	CollisionType LastDetectedType = None;
 };
 
 struct CollisionObject
 {
-	CollisionObject(const ICollidable2D* const object) : Object(object) {};
+	CollisionObject(const Collider2D* const object) : Object(object) {};
 
-	const ICollidable2D* const Object = nullptr;
+	const Collider2D* const Object = nullptr;
 	std::vector<Collision2D> Collisions;
 
 	bool HasCollision() const { return Collisions.size() > 0; }
@@ -33,8 +33,8 @@ public:
 	CollisionDetector2D();
 	~CollisionDetector2D();
 
-	void RegisterCollidable(const ICollidable2D* const collidable);
-	void DeregisterCollidable(const ICollidable2D* const collidable);
+	void RegisterCollidable(const Collider2D* const collidable);
+	void DeregisterCollidable(const Collider2D* const collidable);
 
 	void DetectAndUpdateCollisionsOnAllRegisteredObjects();
 	auto GetAllRegisteredCollisionObjects() const -> const std::vector<CollisionObject>& {return m_collidables; };

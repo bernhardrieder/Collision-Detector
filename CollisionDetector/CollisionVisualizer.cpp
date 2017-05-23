@@ -54,19 +54,24 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 		{
 			switch(collision.LastDetectedType)
 			{
-			case BoundingVolume: drawBoundingSphere(obj, deviceContext, camera); break;
-			case AABB: drawAABB(obj, deviceContext, camera); break;
-			case OBB: drawOBB(obj, deviceContext, camera); break;
-			case MinkovskySum: drawMinkovskySum(obj, deviceContext, camera); break;
+			case BoundingVolume: 
+				drawBoundingSphere(obj, camera); 
+				break;
+			case AABB: 
+				drawAABB(obj, camera); 
+				break;
+			case OBB: 
+				drawOBB(obj, camera); 
+				break;
+			case MinkovskySum: 
+				drawMinkovskySum(obj, camera); 
+				break;
 			case None: 
 			default: break;
 			}
 			
 		}
 	}
-	//m_effect->SetMatrices(m_transform.Matrices.CalculateWorld(), camera.GetView(), camera.GetProj());
-
-	//m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, &m_vertices[0], m_vertices.size());
 
 	m_batch->End();
 }
@@ -88,22 +93,23 @@ void CollisionVisualizer::initializeOBB()
 	//todo
 }
 
-void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera)
+void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const Camera& camera)
+{
+	m_effect->SetMatrices(obj.Object->GetLastAppliedWorldMatrix(), camera.GetView(), camera.GetProj());
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_verticesBoundingSphere[0], m_verticesBoundingSphere.size());
+}
+
+void CollisionVisualizer::drawAABB(const CollisionObject& obj, const Camera& camera)
 {
 	//todo
 }
 
-void CollisionVisualizer::drawAABB(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera)
+void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& camera)
 {
 	//todo
 }
 
-void CollisionVisualizer::drawOBB(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera)
-{
-	//todo
-}
-
-void CollisionVisualizer::drawMinkovskySum(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera)
+void CollisionVisualizer::drawMinkovskySum(const CollisionObject& obj, const Camera& camera)
 {
 	//todo
 }
