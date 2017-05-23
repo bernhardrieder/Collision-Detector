@@ -61,7 +61,7 @@ void Asteroid::Update(const float& deltaTime)
 {
 	simpleWanderAlgorithm(deltaTime);
 	updateRandomRotation(deltaTime);
-	updateBoundingBoxesTransforms(m_transform.Matrices.CalculateWorld());
+	updateBoundingBoxesTransforms(m_transform.Matrices.Scale, m_transform.Matrices.Rotation, m_transform.Matrices.Translation);
 }
 
 void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)

@@ -39,7 +39,7 @@ void Player::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext
 void Player::Update(const float& deltaTime, const Keyboard* keyboard)
 {
 	checkAndProcessKeyboardInput(keyboard, deltaTime);
-	updateBoundingBoxesTransforms(m_transform.Matrices.CalculateWorld());
+	updateBoundingBoxesTransforms(m_transform.Matrices.Scale, m_transform.Matrices.Rotation, m_transform.Matrices.Translation);
 }
 
 void Player::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
