@@ -82,4 +82,5 @@ namespace DX
 #include "Asteroid.h"
 #include "SteeringBehaviour.h"
 #include "CollisionVisualizer.h"
+#include "CollisionDetector2D.h"
 #include "ICollidable2D.h"
