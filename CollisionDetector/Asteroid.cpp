@@ -109,8 +109,8 @@ void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribut
 	JarvisMarch jarvisMarch;
 	auto hull = jarvisMarch.GetConvexHull(randomVertices);
 	for (size_t i = 0; i < hull.size(); ++i)
-		m_vertices.push_back(VertexPositionColor(Vector3(hull[i].x, hull[i].y, 0.f), Colors::DarkGray));
-	m_vertices.push_back(VertexPositionColor(Vector3(hull[0].x, hull[0].y, 0.f), Colors::DarkGray));
+		m_vertices.push_back(VertexPositionColor(Vector3(hull[i].x, hull[i].y, 0.1f), Colors::DarkGray));
+	m_vertices.push_back(m_vertices[0]);
 
 	m_verticesPositions = hull;
 }

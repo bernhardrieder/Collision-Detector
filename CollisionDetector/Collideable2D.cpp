@@ -67,5 +67,6 @@ void Collideable2D::createAABB()
 
 void Collideable2D::createOBB()
 {
+	//todo: improve?!
 	DirectX::BoundingOrientedBox::CreateFromPoints(m_orientedBoundingBox.Original, m_verticesPositions3D.Original.size(), &m_verticesPositions3D.Original[0], sizeof(Vector3));
 }

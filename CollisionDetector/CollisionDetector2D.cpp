@@ -70,8 +70,6 @@ bool CollisionDetector2D::isCollisionDetectedWithAABB(const DirectX::BoundingBox
 
 bool CollisionDetector2D::isCollisionDetectedWithOBB(const DirectX::BoundingOrientedBox& lhs, const DirectX::BoundingOrientedBox& rhs)
 {
-	//todo
-	return false;
 	return lhs.Intersects(rhs);
 }
 
