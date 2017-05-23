@@ -44,6 +44,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_player.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
 	m_player.SetScale(Vector3::One * 10);
 	m_player.AttachFollowingCamera(&m_camera);
+	m_collisionDetector.RegisterCollidable(&m_player);
 
 	auto randomPositionDistribution = std::uniform_real_distribution<float>(-1000, 1000);
 	auto randomRotationAngleDistribution = std::uniform_real_distribution<float>(0, 360);
@@ -53,7 +54,9 @@ void Game::Initialize(HWND window, int width, int height)
 	{
 		m_asteroids[i].InitializeRenderable(m_d3dDevice.Get(), m_d3dContext.Get(), randomVerticesDistribution);
 		m_asteroids[i].InitializeTransform(randomPositionDistribution, randomRotationAngleDistribution, randomScaleDistribution);
+		m_collisionDetector.RegisterCollidable(&m_asteroids[i]);
 	}
+	m_collisionVisualizer.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
 }
 
 // Executes the basic game loop.

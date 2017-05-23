@@ -83,4 +83,4 @@ namespace DX
 #include "SteeringBehaviour.h"
 #include "CollisionVisualizer.h"
 #include "CollisionDetector2D.h"
-#include "Collider2D.h"
+#include "Collideable2D.h"

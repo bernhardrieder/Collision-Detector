@@ -11,12 +11,12 @@ CollisionDetector2D::~CollisionDetector2D()
 {
 }
 
-void CollisionDetector2D::RegisterCollidable(const Collider2D* const collidable)
+void CollisionDetector2D::RegisterCollidable(const Collideable2D* const collidable)
 {
 	m_collidables.push_back(CollisionObject(collidable));
 }
 
-void CollisionDetector2D::DeregisterCollidable(const Collider2D* const collidable)
+void CollisionDetector2D::DeregisterCollidable(const Collideable2D* const collidable)
 {
 	//todo
 }

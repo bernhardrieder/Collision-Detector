@@ -1,10 +1,10 @@
 #pragma once
 #include "SimpleMovable2D.h"
-#include "Collider2D.h"
+#include "Collideable2D.h"
 
 class Player : 
 	public SimpleMovable2D, 
-	public Collider2D
+	public Collideable2D
 {
 public:
 	Player();

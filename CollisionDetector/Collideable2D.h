@@ -1,9 +1,9 @@
 #pragma once
-class Collider2D
+class Collideable2D
 {
 	static uint64_t s_ids;
 public:
-	virtual ~Collider2D() = default;
+	virtual ~Collideable2D() = default;
 
 	auto GetID() const -> const uint64_t&;
 	const DirectX::BoundingSphere& GetBoundingSphereTransformed() const { return m_boundingSphere.Transformed; }

@@ -15,10 +15,10 @@ private:
 	void initializeAABB();
 	void initializeOBB();
 
-	void drawBoundingSphere(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera);
-	void drawAABB(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera);
-	void drawOBB(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera);
-	void drawMinkovskySum(const CollisionObject& obj, ID3D11DeviceContext* deviceContext, const Camera& camera);
+	void drawBoundingSphere(const CollisionObject& obj, const Camera& camera);
+	void drawAABB(const CollisionObject& obj, const Camera& camera);
+	void drawOBB(const CollisionObject& obj, const Camera& camera);
+	void drawMinkovskySum(const CollisionObject& obj, const Camera& camera);
 
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesLineStrip(const float& radius) const;
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesTriangleFan(const DirectX::SimpleMath::Vector2& center, const float& radius) const;

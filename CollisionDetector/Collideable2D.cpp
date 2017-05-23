@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "Collider2D.h"
+#include "Collideable2D.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-uint64_t Collider2D::s_ids = -1;
+uint64_t Collideable2D::s_ids = -1;
 
-auto Collider2D::GetID() const -> const uint64_t&
+auto Collideable2D::GetID() const -> const uint64_t&
 {
 	return m_id;
 }
 
-void Collider2D::initializeCollider()
+void Collideable2D::initializeCollider()
 {
 	m_id = ++s_ids;
 	createBoundingSphere();
@@ -19,13 +19,13 @@ void Collider2D::initializeCollider()
 	createOBB();
 }
 
-void Collider2D::updateBoundingBoxesTransforms(const DirectX::SimpleMath::Matrix& worldMatrix)
+void Collideable2D::updateBoundingBoxesTransforms(const DirectX::SimpleMath::Matrix& worldMatrix)
 {
 	m_lastAppliedWorldMatrix = worldMatrix;
 	m_boundingSphere.Original.Transform(m_boundingSphere.Transformed, worldMatrix);
 }
 
-void Collider2D::createBoundingSphere()
+void Collideable2D::createBoundingSphere()
 {
 	auto& vertices2d = GetVertices();
 	std::vector<Vector3> vertices3d;
