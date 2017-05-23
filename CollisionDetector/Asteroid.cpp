@@ -28,6 +28,7 @@ Asteroid::~Asteroid()
 void Asteroid::InitializeRenderable(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const std::uniform_real_distribution<float>& verticesDistribution)
 {
 	createConvexHullWithJarvisMarch(verticesDistribution);
+	initializeCollider();
 
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(deviceContext);
 	m_states = std::make_unique<CommonStates>(device);
@@ -46,6 +47,7 @@ void Asteroid::InitializeRenderable(ID3D11Device* device, ID3D11DeviceContext* d
 			VertexPositionColor::InputElementCount,
 			shaderByteCode, byteCodeLength,
 			m_inputLayout.ReleaseAndGetAddressOf()));
+
 }
 
 void Asteroid::InitializeTransform(const std::uniform_real_distribution<float>& positionDistribution, const std::uniform_real_distribution<float>& rotationAngleDistribution, const std::uniform_real_distribution<float>& scaleDistribution)
@@ -59,6 +61,7 @@ void Asteroid::Update(const float& deltaTime)
 {
 	simpleWanderAlgorithm(deltaTime);
 	updateRandomRotation(deltaTime);
+	updateBoundingBoxesTransforms(m_transform.Matrices.Scale, m_transform.Matrices.Rotation, m_transform.Matrices.Translation);
 }
 
 void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
@@ -67,18 +70,21 @@ void Asteroid::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
 	deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
 	deviceContext->RSSetState(m_states->CullNone());
 
-	m_effect->Apply(deviceContext);
-
 	deviceContext->IASetInputLayout(m_inputLayout.Get());
 
-	m_batch->Begin();
+	m_effect->SetMatrices(m_transform.Matrices.CalculateWorld(), camera.GetView(), camera.GetProj());
+	m_effect->Apply(deviceContext);
 
-	auto& m = m_transform.Matrices;
-	m_effect->SetMatrices(m.Scale*m.Rotation*m.Translation, camera.GetView(), camera.GetProj());
+	m_batch->Begin();
 
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_vertices[0], m_vertices.size());
 
 	m_batch->End();
+}
+
+const std::vector<DirectX::SimpleMath::Vector2>& Asteroid::GetVertices() const
+{
+	return m_verticesPositions;
 }
 
 void Asteroid::updateRandomRotation(const float& deltaTime)
@@ -95,7 +101,7 @@ void Asteroid::updateRandomRotation(const float& deltaTime)
 void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribution<float>& verticesDistribution)
 {
 	std::vector<Vector2> randomVertices;
-	size_t randomVerticesCount = 8;
+	size_t randomVerticesCount = 3;
 
 	for (size_t i = 0; i < randomVerticesCount; ++i)
 		randomVertices.push_back(Vector2(verticesDistribution(m_mersenneTwisterEngine), verticesDistribution(m_mersenneTwisterEngine)));
@@ -103,8 +109,10 @@ void Asteroid::createConvexHullWithJarvisMarch(const std::uniform_real_distribut
 	JarvisMarch jarvisMarch;
 	auto hull = jarvisMarch.GetConvexHull(randomVertices);
 	for (size_t i = 0; i < hull.size(); ++i)
-		m_vertices.push_back(VertexPositionColor(Vector3(hull[i].x, hull[i].y, 0.f), Colors::DarkGray));
-	m_vertices.push_back(VertexPositionColor(Vector3(hull[0].x, hull[0].y, 0.f), Colors::DarkGray));
+		m_vertices.push_back(VertexPositionColor(Vector3(hull[i].x, hull[i].y, 0.1f), Colors::DarkGray));
+	m_vertices.push_back(m_vertices[0]);
+
+	m_verticesPositions = hull;
 }
 
 void Asteroid::simpleWanderAlgorithm(const float& deltaTime)

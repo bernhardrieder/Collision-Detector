@@ -44,6 +44,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_player.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
 	m_player.SetScale(Vector3::One * 10);
 	m_player.AttachFollowingCamera(&m_camera);
+	m_collisionDetector.RegisterCollidable(&m_player);
 
 	auto randomPositionDistribution = std::uniform_real_distribution<float>(-1000, 1000);
 	auto randomRotationAngleDistribution = std::uniform_real_distribution<float>(0, 360);
@@ -53,7 +54,9 @@ void Game::Initialize(HWND window, int width, int height)
 	{
 		m_asteroids[i].InitializeRenderable(m_d3dDevice.Get(), m_d3dContext.Get(), randomVerticesDistribution);
 		m_asteroids[i].InitializeTransform(randomPositionDistribution, randomRotationAngleDistribution, randomScaleDistribution);
+		m_collisionDetector.RegisterCollidable(&m_asteroids[i]);
 	}
+	m_collisionVisualizer.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
 }
 
 // Executes the basic game loop.
@@ -79,6 +82,8 @@ void Game::Update(DX::StepTimer const& timer)
 	for (int i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Update(elapsedTime);
 	
+	m_collisionDetector.DetectAndUpdateCollisionsOnAllRegisteredObjects();
+
 	m_camera.UpdateViewMatrix();
 }
 
@@ -111,6 +116,8 @@ void Game::Render()
 
 	for (size_t i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Render(m_d3dContext.Get(), m_camera);
+
+	m_collisionVisualizer.Render(m_collisionDetector.GetAllRegisteredCollisionObjects(), m_d3dDevice.Get(), m_d3dContext.Get(), m_camera);
 
     Present();
 }
@@ -407,7 +414,7 @@ void Game::CreateResources()
 
 void Game::initializeWindowSizeDependentObjects()
 {
-	m_camera.SetOrthographicLens(m_outputWidth, m_outputHeight, 0.f, 1000.f);
+	m_camera.SetOrthographicLens(static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight), 0.f, 1000.f);
 	m_camera.UpdateViewMatrix();
 }
 

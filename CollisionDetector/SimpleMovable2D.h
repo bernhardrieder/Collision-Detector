@@ -11,7 +11,11 @@ struct Transform
 		DirectX::SimpleMath::Matrix Translation = DirectX::SimpleMath::Matrix::Identity;
 		DirectX::SimpleMath::Matrix Rotation = DirectX::SimpleMath::Matrix::Identity;
 		DirectX::SimpleMath::Matrix Scale = DirectX::SimpleMath::Matrix::Identity;
+
+		DirectX::SimpleMath::Matrix CalculateWorld() { return Scale*Rotation*Translation; }
 	} Matrices;
+
+
 };
 
 class SimpleMovable2D

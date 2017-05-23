@@ -17,6 +17,9 @@
     <ClInclude Include="JarvisMarch.h" />
     <ClInclude Include="SteeringBehaviour.h" />
     <ClInclude Include="SteeringBehaviourHelper.h" />
+    <ClInclude Include="CollisionVisualizer.h" />
+    <ClInclude Include="CollisionDetector2D.h" />
+    <ClInclude Include="Collideable2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -29,6 +32,9 @@
     <ClCompile Include="JarvisMarch.cpp" />
     <ClCompile Include="SteeringBehaviour.cpp" />
     <ClCompile Include="SteeringBehaviourHelper.cpp" />
+    <ClCompile Include="CollisionVisualizer.cpp" />
+    <ClCompile Include="CollisionDetector2D.cpp" />
+    <ClCompile Include="Collideable2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

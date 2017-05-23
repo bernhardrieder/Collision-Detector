@@ -69,9 +69,11 @@ private:
     DX::StepTimer                                   m_timer;
 	Camera m_camera;
 	Player m_player;
-	const static size_t m_numOfAsteroids = 1000;
+	const static size_t m_numOfAsteroids = 100;
 	Asteroid m_asteroids[m_numOfAsteroids];
-	
+	CollisionDetector2D m_collisionDetector;
+	CollisionVisualizer m_collisionVisualizer;
+
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;
 	std::unique_ptr<DirectX::Mouse> m_mouse;
 };

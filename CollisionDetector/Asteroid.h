@@ -1,9 +1,11 @@
 #pragma once
 #include "SimpleMovable2D.h"
 #include "SteeringBehaviour.h"
+#include "Collideable2D.h"
 
 class Asteroid :
-	public SimpleMovable2D
+	public SimpleMovable2D, 
+	public Collideable2D
 {
 public:
 	Asteroid();
@@ -14,6 +16,7 @@ public:
 	void Update(const float& deltaTime);
 	void Render(ID3D11DeviceContext* deviceContext, const Camera& camera);
 
+	const std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const override;
 private:
 	void updateRandomRotation(const float& deltaTime);
 	void createConvexHullWithJarvisMarch(const std::uniform_real_distribution<float>& verticesDistribution);
@@ -25,6 +28,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	std::vector<DirectX::VertexPositionColor> m_vertices;
+	std::vector<DirectX::SimpleMath::Vector2> m_verticesPositions;
 
 	//randomness
 	std::random_device m_randomDevice;
