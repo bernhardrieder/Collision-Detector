@@ -25,6 +25,7 @@ void CollisionDetector2D::DetectAndUpdateCollisionsOnAllRegisteredObjects()
 {
 	for(auto& owner : m_collidables)
 	{
+		owner.Collisions.clear();
 		for(const auto& other : m_collidables)
 		{
 			if (owner.Object->GetID() == other.Object->GetID())

@@ -25,7 +25,7 @@ void CollisionVisualizer::Initialize(ID3D11Device* device, ID3D11DeviceContext* 
 	void const* shaderByteCode;
 	size_t byteCodeLength;
 
-	m_effects[0]->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+	m_effects[1]->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 
 	DX::ThrowIfFailed(
 		device->CreateInputLayout(VertexPositionColor::InputElements,
@@ -44,55 +44,61 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 	deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
 	deviceContext->RSSetState(m_states->CullNone());
 
-	//m_effects[0]->Apply(deviceContext);
 	deviceContext->IASetInputLayout(m_inputLayout.Get());
 
-	m_batch->Begin();
+	//for (uint64_t i = 0; i < collidables.size(); ++i)
+	//{
+	//	if (m_effects.size() <= i)
+	//		addEffect(device, i);
+	//	m_effects[i]->Apply(deviceContext);
 
+	//	m_batch->Begin();
+
+	//	drawBoundingSphere(collidables[i], camera, m_effects[i].get());
+
+	//	m_batch->End();
+	//}
 
 	for (uint64_t i = 0; i < collidables.size(); ++i)
 	{
 		if (m_effects.size() <= i)
 			addEffect(device, i);
 		m_effects[i]->Apply(deviceContext);
-		drawBoundingSphere(collidables[i], camera, m_effects[i].get());
+
+		if (!collidables[i].HasCollision())
+			continue;
+
+		m_batch->Begin();
+		for(auto& collision : collidables[i].Collisions)
+		{
+			switch(collision.LastDetectedType)
+			{
+			case BoundingVolume: 
+				drawBoundingSphere(collidables[i], camera, m_effects[i].get());
+				break;
+			case AABB: 
+				drawAABB(collidables[i], camera, m_effects[i].get());
+				break;
+			case OBB: 
+				drawOBB(collidables[i], camera, m_effects[i].get());
+				break;
+			case MinkovskySum: 
+				drawMinkovskySum(collidables[i], camera, m_effects[i].get());
+				break;
+			case None: 
+			default: break;
+			}
+		}
+		m_batch->End();
 	}
 
-	//for(auto& obj : collidables)
-	//{
-	//	if (!obj.HasCollision())
-	//		continue;
-	//	for(auto& collision : obj.Collisions)
-	//	{
-	//		switch(collision.LastDetectedType)
-	//		{
-	//		case BoundingVolume: 
-	//			drawBoundingSphere(obj, camera); 
-	//			break;
-	//		case AABB: 
-	//			drawAABB(obj, camera); 
-	//			break;
-	//		case OBB: 
-	//			drawOBB(obj, camera); 
-	//			break;
-	//		case MinkovskySum: 
-	//			drawMinkovskySum(obj, camera); 
-	//			break;
-	//		case None: 
-	//		default: break;
-	//		}
-	//		
-	//	}
-	//}
-
-	m_batch->End();
 }
 
 void CollisionVisualizer::initializeBoundingSphere()
 {
 	auto vertices = createCircleVerticesLineStrip(1.f);
 	for (auto& vertex : vertices)
-		m_verticesBoundingSphere.push_back(DirectX::VertexPositionColor({vertex.x, vertex.y, 0.f}, m_boundingSphereColor));
+		m_verticesBoundingSphere.push_back(DirectX::VertexPositionColor({vertex.x, vertex.y, 1.f}, m_boundingSphereColor));
 }
 
 void CollisionVisualizer::initializeAABB()
