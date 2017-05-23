@@ -40,12 +40,12 @@ void CollisionDetector2D::DetectAndUpdateCollisionsOnAllRegisteredObjects()
 			collision.LastDetectedType = BoundingVolume;
 
 			/************************* AABB *************************/
-			if (!isCollisionDetectedWithAABB())
+			if (!isCollisionDetectedWithAABB(owner.Object->GetAxisAlignedBoundingBoxTransformed(), other.Object->GetAxisAlignedBoundingBoxTransformed()))
 				continue;
 			collision.LastDetectedType = AABB;
 
 			/************************* OBB *************************/
-			if (!isCollisionDetectedWithOBB())
+			if (!isCollisionDetectedWithOBB(owner.Object->GetOrientedBoundingBoxTransformed(), other.Object->GetOrientedBoundingBoxTransformed()))
 				continue;
 			collision.LastDetectedType = OBB;
 
@@ -63,17 +63,20 @@ bool CollisionDetector2D::isCollisionDetectedWithBoundingVolumeTest(const Direct
 	return lhs.Intersects(rhs);
 }
 
-bool CollisionDetector2D::isCollisionDetectedWithAABB()
+bool CollisionDetector2D::isCollisionDetectedWithAABB(const DirectX::BoundingBox& lhs, const DirectX::BoundingBox& rhs)
 {
-	return false;
+	return lhs.Intersects(rhs);
 }
 
-bool CollisionDetector2D::isCollisionDetectedWithOBB()
+bool CollisionDetector2D::isCollisionDetectedWithOBB(const DirectX::BoundingOrientedBox& lhs, const DirectX::BoundingOrientedBox& rhs)
 {
+	//todo
 	return false;
+	return lhs.Intersects(rhs);
 }
 
 bool CollisionDetector2D::isCollisionDetectedWithMinkovskySum()
 {
+	//todo
 	return false;
 }

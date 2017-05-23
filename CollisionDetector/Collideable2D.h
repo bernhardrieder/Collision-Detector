@@ -12,6 +12,9 @@ public:
 
 	virtual const std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const = 0;
 
+	auto GetLastAppliedScaleMatrix() const -> const DirectX::SimpleMath::Matrix& { return m_lastAppliedMatrices.Scale; };
+	auto GetLastAppliedRotationMatrix() const -> const DirectX::SimpleMath::Matrix& { return m_lastAppliedMatrices.Rotation; };
+	auto GetLastAppliedTranslationMatrix() const -> const DirectX::SimpleMath::Matrix& { return m_lastAppliedMatrices.Translation; };
 protected:
 	void initializeCollider();
 	void updateBoundingBoxesTransforms(const DirectX::SimpleMath::Matrix& scaleMatrix, const DirectX::SimpleMath::Matrix& rotationMatrix, const DirectX::SimpleMath::Matrix& translationMatrix);
@@ -26,7 +29,7 @@ private:
 	struct BoundingSphere
 	{
 		DirectX::BoundingSphere Original;
-		DirectX::BoundingSphere Transformed;		
+		DirectX::BoundingSphere Transformed;
 	} m_boundingSphere;
 
 	struct AxisAlignedBoundingBox
@@ -41,7 +44,12 @@ private:
 		DirectX::BoundingOrientedBox Transformed;
 	} m_orientedBoundingBox;
 
-	std::vector<DirectX::SimpleMath::Vector3> m_verticesPositions3D;
+	struct VerticesPositions3D
+	{
+		std::vector<DirectX::SimpleMath::Vector3> Original;
+		std::vector<DirectX::SimpleMath::Vector3> Transformed;
+	} m_verticesPositions3D;
+
 
 	uint64_t m_id = -1;
 
@@ -52,4 +60,3 @@ private:
 		DirectX::SimpleMath::Matrix Translation = DirectX::SimpleMath::Matrix::Identity;
 	} m_lastAppliedMatrices;
 };
-

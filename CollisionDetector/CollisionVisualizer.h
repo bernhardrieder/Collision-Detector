@@ -16,13 +16,14 @@ private:
 	void initializeOBB();
 
 	void drawBoundingSphere(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
-	void drawAABB(const CollisionObject& obj, const Camera& camera);
-	void drawOBB(const CollisionObject& obj, const Camera& camera);
-	void drawMinkovskySum(const CollisionObject& obj, const Camera& camera);
+	void drawAABB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawOBB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawMinkovskySum(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
 
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesLineStrip(const float& radius) const;
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesTriangleFan(const DirectX::SimpleMath::Vector2& center, const float& radius) const;
 	void createCircleVertices(std::vector<DirectX::SimpleMath::Vector2>& vertices, const float& radius, const float& resolution) const;
+	static std::vector<DirectX::SimpleMath::Vector2> createBoxVerticesLineStrip();
 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
 	std::unique_ptr<DirectX::BasicEffect> m_effect;
