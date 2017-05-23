@@ -117,7 +117,7 @@ void Game::Render()
 	for (size_t i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Render(m_d3dContext.Get(), m_camera);
 
-	m_collisionVisualizer.Render(m_collisionDetector.GetAllRegisteredCollisionObjects(), m_d3dContext.Get(), m_camera);
+	m_collisionVisualizer.Render(m_collisionDetector.GetAllRegisteredCollisionObjects(), m_d3dDevice.Get(), m_d3dContext.Get(), m_camera);
 
     Present();
 }
