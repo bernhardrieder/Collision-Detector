@@ -6,7 +6,12 @@ using namespace DirectX::SimpleMath;
 
 uint64_t ICollidable2D::s_ids = -1;
 
-void ICollidable2D::initialize()
+auto ICollidable2D::GetID() const -> const uint64_t&
+{
+	return m_id;
+}
+
+void ICollidable2D::initializeCollider()
 {
 	m_id = ++s_ids;
 	createBoundingSphere();
@@ -14,9 +19,9 @@ void ICollidable2D::initialize()
 	createOBB();
 }
 
-uint64_t ICollidable2D::GetID() const
+void ICollidable2D::updateBoundingBoxesTransforms(const DirectX::SimpleMath::Matrix& worldMatrix)
 {
-	return m_id;
+	m_boundingSphere.Original.Transform(m_boundingSphere.Transformed, worldMatrix);
 }
 
 void ICollidable2D::createBoundingSphere()
@@ -26,5 +31,5 @@ void ICollidable2D::createBoundingSphere()
 	vertices3d.reserve(vertices2d.size());
 	for (auto& vertex : vertices2d)
 		vertices3d.push_back(Vector3(vertex.x, vertex.y, 0.f));
-	BoundingSphere::CreateFromPoints(m_boundingSphere, vertices3d.size(), &vertices3d[0], sizeof(Vector3));
+	DirectX::BoundingSphere::CreateFromPoints(m_boundingSphere.Original, vertices3d.size(), &vertices3d[0], sizeof(Vector3));
 }

@@ -3,25 +3,30 @@ class ICollidable2D
 {
 	static uint64_t s_ids;
 public:
+	virtual ~ICollidable2D() = default;
 
-	uint64_t GetID() const;
-	const DirectX::BoundingSphere& GetBoundingSphere() const { return m_boundingSphere; }
+	auto GetID() const -> const uint64_t&;
+	const DirectX::BoundingSphere& GetBoundingSphereTransformed() const { return m_boundingSphere.Transformed; }
 	void* const GetAABB() {}
 	void* const GetOBB() {}
 
-	virtual std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const = 0;
+	virtual const std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const = 0;
 
 protected:
-	void initialize();
-	virtual void updateTransforms() = 0;
+	void initializeCollider();
+	void updateBoundingBoxesTransforms(const DirectX::SimpleMath::Matrix& worldMatrix);
 
+private:
 	void createBoundingSphere();
 	void createAABB();
 	void createOBB();
 
-	DirectX::BoundingSphere m_boundingSphere;
+	struct BoundingSphere
+	{
+		DirectX::BoundingSphere Original;
+		DirectX::BoundingSphere Transformed;		
+	} m_boundingSphere;
 
-private:
 	uint64_t m_id = -1;
 };
 

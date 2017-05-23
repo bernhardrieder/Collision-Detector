@@ -14,6 +14,9 @@ Player::~Player()
 
 void Player::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
+	createMesh();
+	initializeCollider();
+
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(deviceContext);
 	m_states = std::make_unique<CommonStates>(device);
 
@@ -50,13 +53,9 @@ void Player::Render(ID3D11DeviceContext* deviceContext, const Camera& camera)
 
 	m_batch->Begin();
 
-	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Red);
-	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Red);
-	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Red);
-	auto& m = m_transform.Matrices;
-	m_effect->SetMatrices(m.Scale*m.Rotation*m.Translation, camera.GetView(), camera.GetProj());
+	m_effect->SetMatrices(m_transform.Matrices.CalculateWorld(), camera.GetView(), camera.GetProj());
 
-	m_batch->DrawTriangle(v1, v2, v3);
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, &m_vertices[0], m_vertices.size());
 
 	m_batch->End();
 }
@@ -71,6 +70,24 @@ void Player::SetPosition(const Vector3& newPosition)
 	SimpleMovable2D::SetPosition(newPosition);
 	if (m_followingCamera)
 		m_followingCamera->SetPosition(Vector3(newPosition.x, newPosition.y, m_followingCamera->GetPosition().z));
+}
+
+const std::vector<DirectX::SimpleMath::Vector2>& Player::GetVertices() const
+{
+	return m_verticesPositions;
+}
+
+void Player::createMesh()
+{
+	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Red);
+	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Red);
+	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Red);
+	m_vertices.push_back(v1);
+	m_vertices.push_back(v2);
+	m_vertices.push_back(v3);
+
+	for (auto& vertex : m_vertices)
+		m_verticesPositions.push_back({ vertex.position.x, vertex.position.y });
 }
 
 void Player::checkAndProcessKeyboardInput(const Keyboard* keyboard, float deltaTime)

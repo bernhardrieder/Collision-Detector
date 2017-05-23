@@ -31,7 +31,7 @@ void CollisionDetector2D::DetectAndUpdateCollisionsOnAllRegisteredObjects()
 				continue;
 
 			/************************* Bounding Volume *************************/
-			if (!isCollisionDetectedWithBoundingVolumeTest(owner.Object->GetBoundingSphere(), other.Object->GetBoundingSphere()))
+			if (!isCollisionDetectedWithBoundingVolumeTest(owner.Object->GetBoundingSphereTransformed(), other.Object->GetBoundingSphereTransformed()))
 			continue;
 
 			owner.Collisions.push_back(Collision2D(other.Object));
