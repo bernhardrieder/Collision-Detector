@@ -6,11 +6,12 @@ public:
 	virtual ~Collideable2D() = default;
 
 	auto GetID() const -> const uint64_t&;
-	const DirectX::BoundingSphere& GetBoundingSphereTransformed() const { return m_boundingSphere.Transformed; }
-	const DirectX::BoundingBox& GetAxisAlignedBoundingBoxTransformed() const { return m_axisAlignedBoundingBox.Transformed; }
-	const DirectX::BoundingOrientedBox& GetOrientedBoundingBoxTransformed() const { return m_orientedBoundingBox.Transformed; }
+	const DirectX::BoundingSphere& GetBoundingSphereTransformed();
+	const DirectX::BoundingBox& GetAxisAlignedBoundingBoxTransformed();
+	const DirectX::BoundingOrientedBox& GetOrientedBoundingBoxTransformed();
 
 	virtual const std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const = 0;
+	auto GetVertices3DRotated() -> const std::vector<DirectX::SimpleMath::Vector3>&;
 
 	auto GetLastAppliedScaleMatrix() const -> const DirectX::SimpleMath::Matrix& { return m_lastAppliedMatrices.Scale; };
 	auto GetLastAppliedRotationMatrix() const -> const DirectX::SimpleMath::Matrix& { return m_lastAppliedMatrices.Rotation; };
@@ -21,6 +22,7 @@ protected:
 
 private:
 	void extract3dVerticesPositionsFromVertices();
+	void transformOriginalVertices3D(const DirectX::SimpleMath::Matrix& transformMatrix);
 	void createBoundingSphere();
 	void createAABB();
 	void createOBB();
@@ -58,5 +60,8 @@ private:
 		DirectX::SimpleMath::Matrix Scale = DirectX::SimpleMath::Matrix::Identity;
 		DirectX::SimpleMath::Matrix Rotation = DirectX::SimpleMath::Matrix::Identity;
 		DirectX::SimpleMath::Matrix Translation = DirectX::SimpleMath::Matrix::Identity;
+
+		DirectX::SimpleMath::Matrix ScaleTranslation = DirectX::SimpleMath::Matrix::Identity;
+		DirectX::SimpleMath::Matrix ScaleRotationTranslation = DirectX::SimpleMath::Matrix::Identity;
 	} m_lastAppliedMatrices;
 };

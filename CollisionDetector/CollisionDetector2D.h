@@ -11,17 +11,17 @@ enum CollisionType
 
 struct Collision2D
 {
-	Collision2D(const Collideable2D* const partner) : Partner(partner) {};
+	Collision2D(Collideable2D* const partner) : Partner(partner) {};
 
-	const Collideable2D* const Partner = nullptr;
+	Collideable2D* const Partner = nullptr;
 	CollisionType LastDetectedType = None;
 };
 
 struct CollisionObject
 {
-	CollisionObject(const Collideable2D* const object) : Object(object) {};
+	CollisionObject(Collideable2D* const object) : Object(object) {};
 
-	const Collideable2D* const Object = nullptr;
+	Collideable2D* const Object = nullptr;
 	std::vector<Collision2D> Collisions;
 
 	bool HasCollision() const { return Collisions.size() > 0; }
@@ -33,8 +33,8 @@ public:
 	CollisionDetector2D();
 	~CollisionDetector2D();
 
-	void RegisterCollidable(const Collideable2D* const collidable);
-	void DeregisterCollidable(const Collideable2D* const collidable);
+	void RegisterCollidable(Collideable2D* const collidable);
+	void DeregisterCollidable(Collideable2D* const collidable);
 
 	void DetectAndUpdateCollisionsOnAllRegisteredObjects();
 	auto GetAllRegisteredCollisionObjects() const -> const std::vector<CollisionObject>& {return m_collidables; };

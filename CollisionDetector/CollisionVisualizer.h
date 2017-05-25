@@ -18,7 +18,7 @@ private:
 	void drawBoundingSphere(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
 	void drawAABB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
 	void drawOBB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
-	void drawMinkovskySum(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawMinkovskiDifference(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
 
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesLineStrip(const float& radius) const;
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesTriangleFan(const DirectX::SimpleMath::Vector2& center, const float& radius) const;

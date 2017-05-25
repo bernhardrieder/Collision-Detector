@@ -51,9 +51,10 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 	//	m_batch->Begin();
 	//	//drawBoundingSphere(collidables[i], camera, deviceContext);
 	//	//drawAABB(collidables[i], camera, deviceContext);
-	//	drawOBB(collidables[i], camera, deviceContext);
+	//	//drawOBB(collidables[i], camera, deviceContext);
 	//	m_batch->End();
 	//}
+	//return;
 
 	for (uint64_t i = 0; i < collidables.size(); ++i)
 	{
@@ -75,7 +76,7 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 				drawOBB(collidables[i], camera, deviceContext);
 				break;
 			case MinkovskiDifference: 
-				drawMinkovskySum(collidables[i], camera, deviceContext);
+				drawMinkovskiDifference(collidables[i], camera, deviceContext);
 				break;
 			case None: 
 			default: break;
@@ -140,7 +141,7 @@ void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& came
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_verticesOBB[0], m_verticesOBB.size());
 }
 
-void CollisionVisualizer::drawMinkovskySum(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
+void CollisionVisualizer::drawMinkovskiDifference(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
 	//todo
 }
