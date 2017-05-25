@@ -74,7 +74,7 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 			case OBB: 
 				drawOBB(collidables[i], camera, deviceContext);
 				break;
-			case MinkovskySum: 
+			case MinkovskiDifference: 
 				drawMinkovskySum(collidables[i], camera, deviceContext);
 				break;
 			case None: 

@@ -50,9 +50,9 @@ void CollisionDetector2D::DetectAndUpdateCollisionsOnAllRegisteredObjects()
 			collision.LastDetectedType = OBB;
 
 			/************************* Minkovsky Sum *************************/
-			if (!isCollisionDetectedWithMinkovskySum())
+			if (!isCollisionDetectedWithMinkovskiDifference())
 				continue;
-			collision.LastDetectedType = MinkovskySum;
+			collision.LastDetectedType = MinkovskiDifference;
 		}
 	}
 }
@@ -73,7 +73,7 @@ bool CollisionDetector2D::isCollisionDetectedWithOBB(const DirectX::BoundingOrie
 	return lhs.Intersects(rhs);
 }
 
-bool CollisionDetector2D::isCollisionDetectedWithMinkovskySum()
+bool CollisionDetector2D::isCollisionDetectedWithMinkovskiDifference()
 {
 	//todo
 	return false;
