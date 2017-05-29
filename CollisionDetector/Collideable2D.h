@@ -28,18 +28,22 @@ private:
 	void createOBB();
 
 	//https://msdn.microsoft.com/en-us/library/bb313876.aspx
+
+	//todo: implement own boudingsphere!
 	struct BoundingSphere
 	{
 		DirectX::BoundingSphere Original;
 		DirectX::BoundingSphere Transformed;
 	} m_boundingSphere;
 
+	//todo: implement own bounding box!
 	struct AxisAlignedBoundingBox
 	{
 		DirectX::BoundingBox Original;
 		DirectX::BoundingBox Transformed;
 	} m_axisAlignedBoundingBox;
 
+	//todo: implement own OOB
 	struct OrientedBoundingBox
 	{
 		DirectX::BoundingOrientedBox Original;

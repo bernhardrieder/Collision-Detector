@@ -46,7 +46,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_player.AttachFollowingCamera(&m_camera);
 	m_collisionDetector.RegisterCollidable(&m_player);
 
-	auto randomPositionDistribution = std::uniform_real_distribution<float>(-1000, 1000);
+	auto randomPositionDistribution = std::uniform_real_distribution<float>(-200, 200);
 	auto randomRotationAngleDistribution = std::uniform_real_distribution<float>(0, 360);
 	auto randomScaleDistribution = std::uniform_real_distribution<float>(0.5f, 2);
 	auto randomVerticesDistribution = std::uniform_real_distribution<float>(-10, 10);

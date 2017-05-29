@@ -33,7 +33,7 @@ const DirectX::BoundingOrientedBox& Collideable2D::GetOrientedBoundingBoxTransfo
 
 auto Collideable2D::GetVertices3DRotated() -> const std::vector<DirectX::SimpleMath::Vector3>&
 {
-	transformOriginalVertices3D(m_lastAppliedMatrices.Rotation);
+	transformOriginalVertices3D(m_lastAppliedMatrices.ScaleRotationTranslation);
 	return m_verticesPositions3D.Transformed;
 }
 
