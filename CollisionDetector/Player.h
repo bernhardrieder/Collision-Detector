@@ -4,7 +4,7 @@
 
 class Player : 
 	public SimpleMovable2D, 
-	public Collideable2D
+	public CollisionDetection::Collideable2D
 {
 public:
 	Player();

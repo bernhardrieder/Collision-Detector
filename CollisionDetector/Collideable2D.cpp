@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Collideable2D.h"
 
-using namespace DirectX;
 using namespace DirectX::SimpleMath;
+using namespace CollisionDetection;
 
 uint64_t Collideable2D::s_ids = -1;
 
@@ -11,9 +11,9 @@ auto Collideable2D::GetID() const -> const uint64_t&
 	return m_id;
 }
 
-const DirectX::BoundingSphere& Collideable2D::GetBoundingSphereTransformed()
+const BoundingSphere& Collideable2D::GetBoundingSphereTransformed()
 {
-	m_boundingSphere.Original.Transform(m_boundingSphere.Transformed, m_lastAppliedMatrices.ScaleRotationTranslation);
+	m_boundingSphere.Original.Transform(m_boundingSphere.Transformed, m_lastAppliedMatrices.ScaleRotationTranslation, m_lastAppliedMatrices.Scale);
 	return m_boundingSphere.Transformed;
 }
 
@@ -31,7 +31,7 @@ const DirectX::BoundingOrientedBox& Collideable2D::GetOrientedBoundingBoxTransfo
 	return m_orientedBoundingBox.Transformed;
 }
 
-auto Collideable2D::GetVertices3DRotated() -> const std::vector<DirectX::SimpleMath::Vector3>&
+auto Collideable2D::GetVertices3DTransformed() -> const std::vector<DirectX::SimpleMath::Vector3>&
 {
 	transformOriginalVertices3D(m_lastAppliedMatrices.ScaleRotationTranslation);
 	return m_verticesPositions3D.Transformed;
@@ -78,7 +78,7 @@ void Collideable2D::transformOriginalVertices3D(const DirectX::SimpleMath::Matri
 
 void Collideable2D::createBoundingSphere()
 {
-	DirectX::BoundingSphere::CreateFromPoints(m_boundingSphere.Original, m_verticesPositions3D.Original.size(), &m_verticesPositions3D.Original[0], sizeof(Vector3));
+	m_boundingSphere.Original.CreateFromPoints(m_verticesPositions3D.Original);
 }
 
 void Collideable2D::createAABB()

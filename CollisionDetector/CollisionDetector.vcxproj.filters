@@ -20,6 +20,10 @@
     <ClInclude Include="CollisionVisualizer.h" />
     <ClInclude Include="CollisionDetector2D.h" />
     <ClInclude Include="Collideable2D.h" />
+    <ClInclude Include="CollisionHelper.h" />
+    <ClInclude Include="BoundingSphere.h" />
+    <ClInclude Include="OrientedBoundingBox.h" />
+    <ClInclude Include="AxisAlignedBoundingBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -35,6 +39,10 @@
     <ClCompile Include="CollisionVisualizer.cpp" />
     <ClCompile Include="CollisionDetector2D.cpp" />
     <ClCompile Include="Collideable2D.cpp" />
+    <ClCompile Include="CollisionHelper.cpp" />
+    <ClCompile Include="BoundingSphere.cpp" />
+    <ClCompile Include="OrientedBoundingBox.cpp" />
+    <ClCompile Include="AxisAlignedBoundingBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

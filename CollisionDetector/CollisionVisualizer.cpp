@@ -3,6 +3,7 @@
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+using namespace CollisionDetection;
 
 CollisionVisualizer::CollisionVisualizer()
 {
@@ -49,7 +50,7 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 	//for (uint64_t i = 0; i < collidables.size(); ++i)
 	//{
 	//	m_batch->Begin();
-	//	//drawBoundingSphere(collidables[i], camera, deviceContext);
+	//	drawBoundingSphere(collidables[i], camera, deviceContext);
 	//	//drawAABB(collidables[i], camera, deviceContext);
 	//	//drawOBB(collidables[i], camera, deviceContext);
 	//	m_batch->End();
@@ -109,8 +110,8 @@ void CollisionVisualizer::initializeOBB()
 
 void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
-	Matrix translation = Matrix::CreateTranslation(obj.Object->GetBoundingSphereTransformed().Center);
-	Matrix scale = Matrix::CreateScale(obj.Object->GetBoundingSphereTransformed().Radius);
+	Matrix translation = Matrix::CreateTranslation(obj.Object->GetBoundingSphereTransformed().GetCenter());
+	Matrix scale = Matrix::CreateScale(obj.Object->GetBoundingSphereTransformed().GetRadius());
 
 	m_effect->SetMatrices(scale*Matrix::Identity*translation, camera.GetView(), camera.GetProj());
 	m_effect->Apply(deviceContext);

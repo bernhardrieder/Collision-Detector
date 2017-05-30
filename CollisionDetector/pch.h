@@ -75,6 +75,10 @@ namespace DX
 #include "VertexTypes.h"
 #include "WICTextureLoader.h"
 
+#include "CollisionHelper.h"
+#include "BoundingSphere.h"
+#include "AxisAlignedBoundingBox.h"
+#include "OrientedBoundingBox.h"
 #include "JarvisMarch.h"
 #include "Camera.h"
 #include "Player.h"

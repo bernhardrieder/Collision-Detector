@@ -152,12 +152,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="AxisAlignedBoundingBox.h" />
+    <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionHelper.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="CollisionVisualizer.h" />
     <ClInclude Include="CollisionDetector2D.h" />
     <ClInclude Include="Collideable2D.h" />
     <ClInclude Include="JarvisMarch.h" />
+    <ClInclude Include="OrientedBoundingBox.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SimpleMovable2D.h" />
@@ -167,13 +171,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="AxisAlignedBoundingBox.cpp" />
+    <ClCompile Include="BoundingSphere.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionHelper.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="CollisionVisualizer.cpp" />
     <ClCompile Include="CollisionDetector2D.cpp" />
     <ClCompile Include="Collideable2D.cpp" />
     <ClCompile Include="JarvisMarch.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="OrientedBoundingBox.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

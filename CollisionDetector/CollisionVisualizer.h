@@ -8,17 +8,17 @@ public:
 	~CollisionVisualizer();
 
 	void Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-	void Render(const std::vector<CollisionObject>& collidables, ID3D11Device* device, ID3D11DeviceContext* deviceContext, const Camera& camera);
+	void Render(const std::vector<CollisionDetection::CollisionObject>& collidables, ID3D11Device* device, ID3D11DeviceContext* deviceContext, const Camera& camera);
 
 private:
 	void initializeBoundingSphere();
 	void initializeAABB();
 	void initializeOBB();
 
-	void drawBoundingSphere(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
-	void drawAABB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
-	void drawOBB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
-	void drawMinkovskiDifference(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawBoundingSphere(const CollisionDetection::CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawAABB(const CollisionDetection::CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawOBB(const CollisionDetection::CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
+	void drawMinkovskiDifference(const CollisionDetection::CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext);
 
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesLineStrip(const float& radius) const;
 	std::vector<DirectX::SimpleMath::Vector2> createCircleVerticesTriangleFan(const DirectX::SimpleMath::Vector2& center, const float& radius) const;

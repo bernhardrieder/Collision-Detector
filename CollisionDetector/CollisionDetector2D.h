@@ -1,49 +1,52 @@
 #pragma once	
 
-enum CollisionType
+namespace CollisionDetection
 {
-	None = 0,
-	BoundingVolume,
-	AABB,
-	OBB,
-	MinkovskiDifference
-};
+	enum CollisionType
+	{
+		None = 0,
+		BoundingVolume,
+		AABB,
+		OBB,
+		MinkovskiDifference
+	};
 
-struct Collision2D
-{
-	Collision2D(Collideable2D* const partner) : Partner(partner) {};
+	struct Collision2D
+	{
+		Collision2D(Collideable2D* const partner) : Partner(partner) {};
 
-	Collideable2D* const Partner = nullptr;
-	CollisionType LastDetectedType = None;
-};
+		Collideable2D* const Partner = nullptr;
+		CollisionType LastDetectedType = None;
+	};
 
-struct CollisionObject
-{
-	CollisionObject(Collideable2D* const object) : Object(object) {};
+	struct CollisionObject
+	{
+		CollisionObject(Collideable2D* const object) : Object(object) {};
 
-	Collideable2D* const Object = nullptr;
-	std::vector<Collision2D> Collisions;
+		Collideable2D* const Object = nullptr;
+		std::vector<Collision2D> Collisions;
 
-	bool HasCollision() const { return Collisions.size() > 0; }
-};
+		bool HasCollision() const { return Collisions.size() > 0; }
+	};
 
-class CollisionDetector2D
-{
-public:
-	CollisionDetector2D();
-	~CollisionDetector2D();
+	class CollisionDetector2D
+	{
+	public:
+		CollisionDetector2D();
+		~CollisionDetector2D();
 
-	void RegisterCollidable(Collideable2D* const collidable);
-	void DeregisterCollidable(Collideable2D* const collidable);
+		void RegisterCollidable(Collideable2D* const collidable);
+		void DeregisterCollidable(Collideable2D* const collidable);
 
-	void DetectAndUpdateCollisionsOnAllRegisteredObjects();
-	auto GetAllRegisteredCollisionObjects() const -> const std::vector<CollisionObject>& {return m_collidables; };
+		void DetectAndUpdateCollisionsOnAllRegisteredObjects();
+		auto GetAllRegisteredCollisionObjects() const -> const std::vector<CollisionObject>& {return m_collidables; };
 
-protected:
-	std::vector<CollisionObject> m_collidables;
+	protected:
+		std::vector<CollisionObject> m_collidables;
 
-	static bool isCollisionDetectedWithBoundingVolumeTest(const DirectX::BoundingSphere& lhs, const DirectX::BoundingSphere& rhs);
-	static bool isCollisionDetectedWithAABB(const DirectX::BoundingBox& lhs, const DirectX::BoundingBox& rhs);
-	static bool isCollisionDetectedWithOBB(const DirectX::BoundingOrientedBox& lhs, const DirectX::BoundingOrientedBox& rhs);
-	bool isCollisionDetectedWithMinkovskiDifference(const std::vector<DirectX::SimpleMath::Vector3>& lhs, const std::vector<DirectX::SimpleMath::Vector3>& rhs);
-};
+		static bool isCollisionDetectedWithBoundingVolumeTest(const BoundingSphere& lhs, const BoundingSphere& rhs);
+		static bool isCollisionDetectedWithAABB(const DirectX::BoundingBox& lhs, const DirectX::BoundingBox& rhs);
+		static bool isCollisionDetectedWithOBB(const DirectX::BoundingOrientedBox& lhs, const DirectX::BoundingOrientedBox& rhs);
+		static bool isCollisionDetectedWithMinkovskiDifference(const std::vector<DirectX::SimpleMath::Vector3>& lhs, const std::vector<DirectX::SimpleMath::Vector3>& rhs);
+	};
+}
