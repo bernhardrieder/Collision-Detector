@@ -50,8 +50,8 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 	//for (uint64_t i = 0; i < collidables.size(); ++i)
 	//{
 	//	m_batch->Begin();
-	//	drawBoundingSphere(collidables[i], camera, deviceContext);
-	//	//drawAABB(collidables[i], camera, deviceContext);
+	//	//drawBoundingSphere(collidables[i], camera, deviceContext);
+	//	drawAABB(collidables[i], camera, deviceContext);
 	//	//drawOBB(collidables[i], camera, deviceContext);
 	//	m_batch->End();
 	//}
@@ -62,9 +62,9 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 		if (!collidables[i].HasCollision())
 			continue;
 
-		m_batch->Begin();
 		for(auto& collision : collidables[i].Collisions)
 		{
+			m_batch->Begin();
 			switch(collision.LastDetectedType)
 			{
 			case BoundingVolume: 
@@ -82,8 +82,8 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 			case None: 
 			default: break;
 			}
+			m_batch->End();
 		}
-		m_batch->End();
 	}
 }
 
@@ -121,8 +121,8 @@ void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const C
 
 void CollisionVisualizer::drawAABB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
-	Matrix translation = Matrix::CreateTranslation(obj.Object->GetAxisAlignedBoundingBoxTransformed().Center);
-	Matrix scale = Matrix::CreateScale(obj.Object->GetAxisAlignedBoundingBoxTransformed().Extents.x , obj.Object->GetAxisAlignedBoundingBoxTransformed().Extents.y , 1.f);
+	Matrix translation = Matrix::CreateTranslation(obj.Object->GetAxisAlignedBoundingBoxTransformed().GetCenter());
+	Matrix scale = Matrix::CreateScale(obj.Object->GetAxisAlignedBoundingBoxTransformed().GetExtents().x, obj.Object->GetAxisAlignedBoundingBoxTransformed().GetExtents().y, 1.f);
 
 	m_effect->SetMatrices(scale*Matrix::Identity*translation, camera.GetView(), camera.GetProj());
 	m_effect->Apply(deviceContext);

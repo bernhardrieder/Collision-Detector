@@ -65,10 +65,9 @@ bool CollisionDetector2D::isCollisionDetectedWithBoundingVolumeTest(const Boundi
 	return lhs.Intersect(rhs);
 }
 
-bool CollisionDetector2D::isCollisionDetectedWithAABB(const DirectX::BoundingBox& lhs, const DirectX::BoundingBox& rhs)
+bool CollisionDetector2D::isCollisionDetectedWithAABB(const AxisAlignedBoundingBox& lhs, const AxisAlignedBoundingBox& rhs)
 {
-	//todo: implement own 
-	return lhs.Intersects(rhs);
+	return lhs.Intersect(rhs);
 }
 
 bool CollisionDetector2D::isCollisionDetectedWithOBB(const DirectX::BoundingOrientedBox& lhs, const DirectX::BoundingOrientedBox& rhs)

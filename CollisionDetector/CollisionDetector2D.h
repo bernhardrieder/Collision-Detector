@@ -45,7 +45,7 @@ namespace CollisionDetection
 		std::vector<CollisionObject> m_collidables;
 
 		static bool isCollisionDetectedWithBoundingVolumeTest(const BoundingSphere& lhs, const BoundingSphere& rhs);
-		static bool isCollisionDetectedWithAABB(const DirectX::BoundingBox& lhs, const DirectX::BoundingBox& rhs);
+		static bool isCollisionDetectedWithAABB(const AxisAlignedBoundingBox& lhs, const AxisAlignedBoundingBox& rhs);
 		static bool isCollisionDetectedWithOBB(const DirectX::BoundingOrientedBox& lhs, const DirectX::BoundingOrientedBox& rhs);
 		static bool isCollisionDetectedWithMinkovskiDifference(const std::vector<DirectX::SimpleMath::Vector3>& lhs, const std::vector<DirectX::SimpleMath::Vector3>& rhs);
 	};

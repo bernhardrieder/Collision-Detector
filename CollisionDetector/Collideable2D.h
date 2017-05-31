@@ -9,7 +9,7 @@ namespace CollisionDetection
 
 		auto GetID() const -> const uint64_t&;
 		const BoundingSphere& GetBoundingSphereTransformed();
-		const DirectX::BoundingBox& GetAxisAlignedBoundingBoxTransformed();
+		const AxisAlignedBoundingBox& GetAxisAlignedBoundingBoxTransformed();
 		const DirectX::BoundingOrientedBox& GetOrientedBoundingBoxTransformed();
 
 		virtual const std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const = 0;
@@ -29,20 +29,16 @@ namespace CollisionDetection
 		void createAABB();
 		void createOBB();
 
-		//https://msdn.microsoft.com/en-us/library/bb313876.aspx
-
-		//todo: implement own boudingsphere!
 		struct BoundingSphereWrapper
 		{
 			BoundingSphere Original;
 			BoundingSphere Transformed;
 		} m_boundingSphere;
 
-		//todo: implement own bounding box!
 		struct AxisAlignedBoundingBoxWrapper
 		{
-			DirectX::BoundingBox Original;
-			DirectX::BoundingBox Transformed;
+			AxisAlignedBoundingBox Original;
+			AxisAlignedBoundingBox Transformed;
 		} m_axisAlignedBoundingBox;
 
 		//todo: implement own OOB
