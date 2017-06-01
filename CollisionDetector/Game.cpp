@@ -23,6 +23,8 @@ Game::Game() :
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
+	omp_set_num_threads(omp_get_max_threads());
+
     m_window = window;
     m_outputWidth = std::max(width, 1);
     m_outputHeight = std::max(height, 1);
@@ -46,7 +48,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_player.AttachFollowingCamera(&m_camera);
 	m_collisionDetector.RegisterCollidable(&m_player);
 
-	auto randomPositionDistribution = std::uniform_real_distribution<float>(-200, 200);
+	auto randomPositionDistribution = std::uniform_real_distribution<float>(-300, 300);
 	auto randomRotationAngleDistribution = std::uniform_real_distribution<float>(0, 360);
 	auto randomScaleDistribution = std::uniform_real_distribution<float>(0.5f, 2);
 	auto randomVerticesDistribution = std::uniform_real_distribution<float>(-10, 10);
@@ -79,6 +81,8 @@ void Game::Update(DX::StepTimer const& timer)
 	checkAndProcessMouseInput(elapsedTime);
 
 	m_player.Update(elapsedTime, m_keyboard.get());
+
+#pragma omp parallel for
 	for (int i = 0; i < m_numOfAsteroids; ++i)
 		m_asteroids[i].Update(elapsedTime);
 	

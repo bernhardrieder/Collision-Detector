@@ -25,34 +25,35 @@ void CollisionDetector2D::DeregisterCollidable(Collideable2D* const collidable)
 
 void CollisionDetector2D::DetectAndUpdateCollisionsOnAllRegisteredObjects()
 {
-	for(auto& owner : m_collidables)
+#pragma omp parallel for
+	for(int i = 0; i < m_collidables.size(); ++i)
 	{
-		owner.Collisions.clear();
+		m_collidables[i].Collisions.clear();
 		for(const auto& other : m_collidables)
 		{
-			if (owner.Object->GetID() == other.Object->GetID())
+			if (m_collidables[i].Object->GetID() == other.Object->GetID())
 				continue;
 
 			/************************* Bounding Volume *************************/
-			if (!isCollisionDetectedWithBoundingVolumeTest(owner.Object->GetBoundingSphereTransformed(), other.Object->GetBoundingSphereTransformed()))
+			if (!isCollisionDetectedWithBoundingVolumeTest(m_collidables[i].Object->GetBoundingSphereTransformed(), other.Object->GetBoundingSphereTransformed()))
 			continue;
 
-			owner.Collisions.push_back(Collision2D(other.Object));
-			Collision2D& collision = owner.Collisions[owner.Collisions.size()-1];
+			m_collidables[i].Collisions.push_back(Collision2D(other.Object));
+			Collision2D& collision = m_collidables[i].Collisions[m_collidables[i].Collisions.size()-1];
 			collision.LastDetectedType = BoundingVolume;
 
 			/************************* AABB *************************/
-			if (!isCollisionDetectedWithAABB(owner.Object->GetAxisAlignedBoundingBoxTransformed(), other.Object->GetAxisAlignedBoundingBoxTransformed()))
+			if (!isCollisionDetectedWithAABB(m_collidables[i].Object->GetAxisAlignedBoundingBoxTransformed(), other.Object->GetAxisAlignedBoundingBoxTransformed()))
 				continue;
 			collision.LastDetectedType = AABB;
 
 			/************************* OBB *************************/
-			if (!isCollisionDetectedWithOBB(owner.Object->GetOrientedBoundingBoxTransformed(), other.Object->GetOrientedBoundingBoxTransformed()))
+			if (!isCollisionDetectedWithOBB(m_collidables[i].Object->GetOrientedBoundingBoxTransformed(), other.Object->GetOrientedBoundingBoxTransformed()))
 				continue;
 			collision.LastDetectedType = OBB;
 
 			/************************* Minkovsky Sum *************************/
-			if (!isCollisionDetectedWithMinkovskiDifference(owner.Object->GetVertices3DTransformed(), other.Object->GetVertices3DTransformed()))
+			if (!isCollisionDetectedWithMinkovskiDifference(m_collidables[i].Object->GetVertices3DTransformed(), other.Object->GetVertices3DTransformed()))
 				continue;
 			collision.LastDetectedType = MinkovskiDifference;
 		}

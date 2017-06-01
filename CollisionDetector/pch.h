@@ -87,3 +87,5 @@ namespace DX
 #include "CollisionVisualizer.h"
 #include "CollisionDetector2D.h"
 #include "Collideable2D.h"
+
+#include "omp.h"
