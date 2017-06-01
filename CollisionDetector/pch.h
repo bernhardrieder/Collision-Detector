@@ -39,6 +39,10 @@
 #include <exception>
 #include <memory>
 #include <stdexcept>
+#include <vector>
+#include <random>
+#include <limits>
+#include <iostream>
 
 namespace DX
 {
@@ -51,3 +55,37 @@ namespace DX
         }
     }
 }
+
+#include "CommonStates.h"
+#include "DDSTextureLoader.h"
+#include "DirectXHelpers.h"
+#include "Effects.h"
+#include "GamePad.h"
+#include "GeometricPrimitive.h"
+#include "GraphicsMemory.h"
+#include "Keyboard.h"
+#include "Model.h"
+#include "Mouse.h"
+#include "PrimitiveBatch.h"
+#include "ScreenGrab.h"
+#include "SimpleMath.h"
+#include "SpriteBatch.h"
+#include "SpriteFont.h"
+#include "VertexTypes.h"
+#include "WICTextureLoader.h"
+
+#include "CollisionHelper.h"
+#include "BoundingSphere.h"
+#include "AxisAlignedBoundingBox.h"
+#include "OrientedBoundingBox.h"
+#include "JarvisMarch.h"
+#include "Camera.h"
+#include "Player.h"
+#include "SimpleMovable2D.h"
+#include "Asteroid.h"
+#include "SteeringBehaviour.h"
+#include "CollisionVisualizer.h"
+#include "CollisionDetector2D.h"
+#include "Collideable2D.h"
+
+#include "omp.h"

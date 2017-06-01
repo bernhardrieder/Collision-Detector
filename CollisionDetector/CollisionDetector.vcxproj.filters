@@ -10,11 +10,39 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="SimpleMovable2D.h" />
+    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="JarvisMarch.h" />
+    <ClInclude Include="SteeringBehaviour.h" />
+    <ClInclude Include="SteeringBehaviourHelper.h" />
+    <ClInclude Include="CollisionVisualizer.h" />
+    <ClInclude Include="CollisionDetector2D.h" />
+    <ClInclude Include="Collideable2D.h" />
+    <ClInclude Include="CollisionHelper.h" />
+    <ClInclude Include="BoundingSphere.h" />
+    <ClInclude Include="OrientedBoundingBox.h" />
+    <ClInclude Include="AxisAlignedBoundingBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SimpleMovable2D.cpp" />
+    <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="JarvisMarch.cpp" />
+    <ClCompile Include="SteeringBehaviour.cpp" />
+    <ClCompile Include="SteeringBehaviourHelper.cpp" />
+    <ClCompile Include="CollisionVisualizer.cpp" />
+    <ClCompile Include="CollisionDetector2D.cpp" />
+    <ClCompile Include="Collideable2D.cpp" />
+    <ClCompile Include="CollisionHelper.cpp" />
+    <ClCompile Include="BoundingSphere.cpp" />
+    <ClCompile Include="OrientedBoundingBox.cpp" />
+    <ClCompile Include="AxisAlignedBoundingBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -28,5 +56,8 @@
     <Manifest Include="settings.manifest">
       <Filter>Assets</Filter>
     </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@
 extern void ExitGame();
 
 using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 using Microsoft::WRL::ComPtr;
 
@@ -22,6 +23,8 @@ Game::Game() :
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
+	omp_set_num_threads(omp_get_max_threads());
+
     m_window = window;
     m_outputWidth = std::max(width, 1);
     m_outputHeight = std::max(height, 1);
@@ -36,6 +39,26 @@ void Game::Initialize(HWND window, int width, int height)
     m_timer.SetFixedTimeStep(true);
     m_timer.SetTargetElapsedSeconds(1.0 / 60);
     */
+
+	m_keyboard = std::make_unique<Keyboard>();
+	m_mouse = std::make_unique<Mouse>();
+	m_mouse->SetWindow(window);
+	m_player.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
+	m_player.SetScale(Vector3::One * 10);
+	m_player.AttachFollowingCamera(&m_camera);
+	m_collisionDetector.RegisterCollidable(&m_player);
+
+	auto randomPositionDistribution = std::uniform_real_distribution<float>(-500, 500);
+	auto randomRotationAngleDistribution = std::uniform_real_distribution<float>(0, 360);
+	auto randomScaleDistribution = std::uniform_real_distribution<float>(0.5f, 2);
+	auto randomVerticesDistribution = std::uniform_real_distribution<float>(-10, 10);
+	for(int i = 0; i < m_numOfAsteroids; ++i)
+	{
+		m_asteroids[i].InitializeRenderable(m_d3dDevice.Get(), m_d3dContext.Get(), randomVerticesDistribution);
+		m_asteroids[i].InitializeTransform(randomPositionDistribution, randomRotationAngleDistribution, randomScaleDistribution);
+		m_collisionDetector.RegisterCollidable(&m_asteroids[i]);
+	}
+	m_collisionVisualizer.Initialize(m_d3dDevice.Get(), m_d3dContext.Get());
 }
 
 // Executes the basic game loop.
@@ -54,8 +77,30 @@ void Game::Update(DX::StepTimer const& timer)
 {
     float elapsedTime = float(timer.GetElapsedSeconds());
 
-    // TODO: Add your game logic here.
-    elapsedTime;
+	checkAndProcessKeyboardInput(elapsedTime);
+	checkAndProcessMouseInput(elapsedTime);
+
+	m_player.Update(elapsedTime, m_keyboard.get());
+
+#pragma omp parallel for
+	for (int i = 0; i < m_numOfAsteroids; ++i)
+		m_asteroids[i].Update(elapsedTime);
+	
+	m_collisionDetector.DetectAndUpdateCollisionsOnAllRegisteredObjects();
+
+	m_camera.UpdateViewMatrix();
+}
+
+void Game::checkAndProcessKeyboardInput(const float& deltaTime)
+{
+	auto kb = m_keyboard->GetState();
+	if (kb.Escape)
+		PostQuitMessage(0);
+}
+
+void Game::checkAndProcessMouseInput(const float& deltaTime)
+{
+	auto mouse = m_mouse->GetState();
 }
 
 // Draws the scene.
@@ -71,6 +116,13 @@ void Game::Render()
 
     // TODO: Add your rendering code here.
 
+	m_player.Render(m_d3dContext.Get(), m_camera);
+
+	for (size_t i = 0; i < m_numOfAsteroids; ++i)
+		m_asteroids[i].Render(m_d3dContext.Get(), m_camera);
+
+	m_collisionVisualizer.Render(m_collisionDetector.GetAllRegisteredCollisionObjects(), m_d3dDevice.Get(), m_d3dContext.Get(), m_camera);
+
     Present();
 }
 
@@ -78,7 +130,7 @@ void Game::Render()
 void Game::Clear()
 {
     // Clear the views.
-    m_d3dContext->ClearRenderTargetView(m_renderTargetView.Get(), Colors::CornflowerBlue);
+    m_d3dContext->ClearRenderTargetView(m_renderTargetView.Get(), Colors::Black);
     m_d3dContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     m_d3dContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
@@ -146,6 +198,11 @@ void Game::GetDefaultSize(int& width, int& height) const
     // TODO: Change to desired default window size (note minimum size is 320x200).
     width = 800;
     height = 600;
+}
+
+float Game::AspectRatio() const
+{
+	return static_cast<float>(m_outputWidth) / static_cast<float>(m_outputHeight);
 }
 
 // These are the resources that depend on the device.
@@ -230,6 +287,13 @@ void Game::CreateDevice()
         (void)m_d3dContext.As(&m_d3dContext1);
 
     // TODO: Initialize device dependent objects here (independent of window size).
+	initializeDeviceDependentObjects();
+}
+
+void Game::initializeDeviceDependentObjects()
+{
+	m_camera.SetPosition(0.0f, 0.0f, -1.f);
+	m_camera.LookAt(Vector3::Up, Vector3(0, 0, 0) - m_camera.GetPosition());
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -349,6 +413,13 @@ void Game::CreateResources()
     DX::ThrowIfFailed(m_d3dDevice->CreateDepthStencilView(depthStencil.Get(), &depthStencilViewDesc, m_depthStencilView.ReleaseAndGetAddressOf()));
 
     // TODO: Initialize windows-size dependent objects here.
+	initializeWindowSizeDependentObjects();
+}
+
+void Game::initializeWindowSizeDependentObjects()
+{
+	m_camera.SetOrthographicLens(static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight), 0.f, 1000.f);
+	m_camera.UpdateViewMatrix();
 }
 
 void Game::OnDeviceLost()

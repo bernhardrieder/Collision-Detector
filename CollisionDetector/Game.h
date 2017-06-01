@@ -31,16 +31,21 @@ public:
     // Properties
     void GetDefaultSize( int& width, int& height ) const;
 
+	float AspectRatio() const;
 private:
 
     void Update(DX::StepTimer const& timer);
+	void checkAndProcessKeyboardInput(const float& deltaTime);
+	void checkAndProcessMouseInput(const float& deltaTime);
     void Render();
 
     void Clear();
     void Present();
 
     void CreateDevice();
+	void initializeDeviceDependentObjects();
     void CreateResources();
+	void initializeWindowSizeDependentObjects();
 
     void OnDeviceLost();
 
@@ -59,7 +64,17 @@ private:
     Microsoft::WRL::ComPtr<IDXGISwapChain1>         m_swapChain1;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  m_renderTargetView;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  m_depthStencilView;
-
+	
     // Rendering loop timer.
     DX::StepTimer                                   m_timer;
+
+	Camera m_camera;
+	Player m_player;
+	const static size_t m_numOfAsteroids = 1000;
+	Asteroid m_asteroids[m_numOfAsteroids];
+	CollisionDetection::CollisionDetector2D m_collisionDetector;
+	CollisionVisualizer m_collisionVisualizer;
+
+	std::unique_ptr<DirectX::Keyboard> m_keyboard;
+	std::unique_ptr<DirectX::Mouse> m_mouse;
 };
