@@ -16,6 +16,7 @@ OrientedBoundingBox::~OrientedBoundingBox()
 
 void OrientedBoundingBox::CreateFromPoints(const std::vector<DirectX::SimpleMath::Vector3>& points)
 {
+	//http://jamesgregson.blogspot.de/2011/03/latex-test.html
 	Vector3 mu = Vector3::Zero;
 
 	// find the mean point location

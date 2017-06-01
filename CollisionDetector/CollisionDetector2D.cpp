@@ -80,13 +80,18 @@ bool CollisionDetector2D::isCollisionDetectedWithMinkovskiDifference(const std::
 {
 	auto vertices = CollisionDetection::GetMinkowkiDifference(lhs, rhs);
 
-	//https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon
+	JarvisMarch jarvis;
+	std::vector<Vector2> vertices2d;
+	for (const auto& vec : vertices)
+		vertices2d.push_back({ vec.x, vec.y });
+	auto convexHull = jarvis.GetConvexHull(vertices2d);
+
 	//https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html
 	int i, j;
 	bool collision = false;
-	for (i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++)
+	for (i = 0, j = convexHull.size()-1; i < convexHull.size(); j = i++)
 	{
-		if (((vertices[i].y > 0.f) != (vertices[j].y > 0.f)) && (0.f < (vertices[j].x - vertices[i].x) * (-vertices[i].y) / (vertices[j].y - vertices[i].y) + vertices[i].x))
+		if (((convexHull[i].y > 0.f) != (convexHull[j].y > 0.f)) && (0.f < (convexHull[j].x - convexHull[i].x) * (-convexHull[i].y) / (convexHull[j].y - convexHull[i].y) + convexHull[i].x))
 		{
 			collision = !collision;
 		}
