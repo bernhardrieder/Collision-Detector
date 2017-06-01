@@ -10,7 +10,7 @@ namespace CollisionDetection
 		auto GetID() const -> const uint64_t&;
 		const BoundingSphere& GetBoundingSphereTransformed();
 		const AxisAlignedBoundingBox& GetAxisAlignedBoundingBoxTransformed();
-		const DirectX::BoundingOrientedBox& GetOrientedBoundingBoxTransformed();
+		const OrientedBoundingBox& GetOrientedBoundingBoxTransformed();
 
 		virtual const std::vector<DirectX::SimpleMath::Vector2>& GetVertices() const = 0;
 		auto GetVertices3DTransformed() -> const std::vector<DirectX::SimpleMath::Vector3>&;
@@ -41,11 +41,10 @@ namespace CollisionDetection
 			AxisAlignedBoundingBox Transformed;
 		} m_axisAlignedBoundingBox;
 
-		//todo: implement own OOB
 		struct OrientedBoundingBoxWrapper
 		{
-			DirectX::BoundingOrientedBox Original;
-			DirectX::BoundingOrientedBox Transformed;
+			OrientedBoundingBox Original;
+			OrientedBoundingBox Transformed;
 		} m_orientedBoundingBox;
 
 		struct VerticesPositions3D

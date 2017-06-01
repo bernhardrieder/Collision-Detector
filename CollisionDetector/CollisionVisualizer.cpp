@@ -51,8 +51,8 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 	//{
 	//	m_batch->Begin();
 	//	//drawBoundingSphere(collidables[i], camera, deviceContext);
-	//	drawAABB(collidables[i], camera, deviceContext);
-	//	//drawOBB(collidables[i], camera, deviceContext);
+	//	//drawAABB(collidables[i], camera, deviceContext);
+	//	drawOBB(collidables[i], camera, deviceContext);
 	//	m_batch->End();
 	//}
 	//return;
@@ -132,8 +132,8 @@ void CollisionVisualizer::drawAABB(const CollisionObject& obj, const Camera& cam
 
 void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
-	Matrix translation = Matrix::CreateTranslation(obj.Object->GetOrientedBoundingBoxTransformed().Center);
-	Matrix scale = Matrix::CreateScale(obj.Object->GetOrientedBoundingBoxTransformed().Extents.x, obj.Object->GetOrientedBoundingBoxTransformed().Extents.y, 1.f);
+	Matrix translation = Matrix::CreateTranslation(obj.Object->GetOrientedBoundingBoxTransformed().GetCenter());
+	Matrix scale = Matrix::CreateScale(obj.Object->GetOrientedBoundingBoxTransformed().GetExtents().x, obj.Object->GetOrientedBoundingBoxTransformed().GetExtents().y, 1.f);
 	const Matrix& rotation = obj.Object->GetLastAppliedRotationMatrix();
 
 	m_effect->SetMatrices(scale*rotation*translation, camera.GetView(), camera.GetProj());

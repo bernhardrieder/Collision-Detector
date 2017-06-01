@@ -70,10 +70,9 @@ bool CollisionDetector2D::isCollisionDetectedWithAABB(const AxisAlignedBoundingB
 	return lhs.Intersect(rhs);
 }
 
-bool CollisionDetector2D::isCollisionDetectedWithOBB(const DirectX::BoundingOrientedBox& lhs, const DirectX::BoundingOrientedBox& rhs)
+bool CollisionDetector2D::isCollisionDetectedWithOBB(const OrientedBoundingBox& lhs, const OrientedBoundingBox& rhs)
 {
-	//todo: implement own 
-	return lhs.Intersects(rhs);
+	return lhs.Intersect(rhs);
 }
 
 bool CollisionDetector2D::isCollisionDetectedWithMinkovskiDifference(const std::vector<DirectX::SimpleMath::Vector3>& lhs, const std::vector<DirectX::SimpleMath::Vector3>& rhs)

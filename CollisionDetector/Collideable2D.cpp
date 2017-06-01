@@ -23,9 +23,9 @@ const AxisAlignedBoundingBox& Collideable2D::GetAxisAlignedBoundingBoxTransforme
 	return m_axisAlignedBoundingBox.Transformed;
 }
 
-const DirectX::BoundingOrientedBox& Collideable2D::GetOrientedBoundingBoxTransformed()
+const OrientedBoundingBox& Collideable2D::GetOrientedBoundingBoxTransformed()
 {
-	m_orientedBoundingBox.Original.Transform(m_orientedBoundingBox.Transformed, m_lastAppliedMatrices.ScaleRotationTranslation);
+	m_orientedBoundingBox.Original.Transform(m_orientedBoundingBox.Transformed, m_lastAppliedMatrices.Translation, m_lastAppliedMatrices.Scale, m_lastAppliedMatrices.Rotation);
 	return m_orientedBoundingBox.Transformed;
 }
 
@@ -81,11 +81,10 @@ void Collideable2D::createBoundingSphere()
 
 void Collideable2D::createAABB()
 {
-	m_axisAlignedBoundingBox.Original.CreateFromPoints(m_verticesPositions3D.Transformed);
+	m_axisAlignedBoundingBox.Original.CreateFromPoints(m_verticesPositions3D.Original);
 }
 
 void Collideable2D::createOBB()
 {
-	//todo: improve create from points?! -> this results in wrong OBBs!
-	DirectX::BoundingOrientedBox::CreateFromPoints(m_orientedBoundingBox.Original, m_verticesPositions3D.Original.size(), &m_verticesPositions3D.Original[0], sizeof(Vector3));
+	m_orientedBoundingBox.Original.CreateFromPoints(m_verticesPositions3D.Original);
 }
