@@ -142,9 +142,23 @@ void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& came
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_verticesOBB[0], m_verticesOBB.size());
 }
 
-void CollisionVisualizer::drawMinkovskiDifference(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
+void CollisionVisualizer::drawMinkovskiDifference(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext) const
 {
-	//todo
+	std::vector<DirectX::VertexPositionColor> vertices;
+	for(const auto& vertex : obj.Object->GetVertices())
+	{
+		vertices.push_back(VertexPositionColor({ vertex.x, vertex.y, 1.f}, m_minkovskySumColor));
+	}
+	vertices.push_back(vertices[0]);
+
+	const Matrix& translation = obj.Object->GetLastAppliedTranslationMatrix();
+	const Matrix& scale = obj.Object->GetLastAppliedScaleMatrix();
+	const Matrix& rotation = obj.Object->GetLastAppliedRotationMatrix();
+
+	m_effect->SetMatrices(scale*rotation*translation, camera.GetView(), camera.GetProj());
+	m_effect->Apply(deviceContext);
+
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &vertices[0], vertices.size());
 }
 
 std::vector<Vector2> CollisionVisualizer::createCircleVerticesLineStrip(const float& radius) const
