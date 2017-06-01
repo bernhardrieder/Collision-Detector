@@ -3,6 +3,7 @@
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+using namespace CollisionDetection;
 
 CollisionVisualizer::CollisionVisualizer()
 {
@@ -54,15 +55,16 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 	//	drawOBB(collidables[i], camera, deviceContext);
 	//	m_batch->End();
 	//}
+	//return;
 
 	for (uint64_t i = 0; i < collidables.size(); ++i)
 	{
 		if (!collidables[i].HasCollision())
 			continue;
 
-		m_batch->Begin();
 		for(auto& collision : collidables[i].Collisions)
 		{
+			m_batch->Begin();
 			switch(collision.LastDetectedType)
 			{
 			case BoundingVolume: 
@@ -74,14 +76,14 @@ void CollisionVisualizer::Render(const std::vector<CollisionObject>& collidables
 			case OBB: 
 				drawOBB(collidables[i], camera, deviceContext);
 				break;
-			case MinkovskySum: 
-				drawMinkovskySum(collidables[i], camera, deviceContext);
+			case MinkovskiDifference: 
+				drawMinkovskiDifference(collidables[i], camera, deviceContext);
 				break;
 			case None: 
 			default: break;
 			}
+			m_batch->End();
 		}
-		m_batch->End();
 	}
 }
 
@@ -108,8 +110,8 @@ void CollisionVisualizer::initializeOBB()
 
 void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
-	Matrix translation = Matrix::CreateTranslation(obj.Object->GetBoundingSphereTransformed().Center);
-	Matrix scale = Matrix::CreateScale(obj.Object->GetBoundingSphereTransformed().Radius);
+	Matrix translation = Matrix::CreateTranslation(obj.Object->GetBoundingSphereTransformed().GetCenter());
+	Matrix scale = Matrix::CreateScale(obj.Object->GetBoundingSphereTransformed().GetRadius());
 
 	m_effect->SetMatrices(scale*Matrix::Identity*translation, camera.GetView(), camera.GetProj());
 	m_effect->Apply(deviceContext);
@@ -119,8 +121,8 @@ void CollisionVisualizer::drawBoundingSphere(const CollisionObject& obj, const C
 
 void CollisionVisualizer::drawAABB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
-	Matrix translation = Matrix::CreateTranslation(obj.Object->GetAxisAlignedBoundingBoxTransformed().Center);
-	Matrix scale = Matrix::CreateScale(obj.Object->GetAxisAlignedBoundingBoxTransformed().Extents.x , obj.Object->GetAxisAlignedBoundingBoxTransformed().Extents.y , 1.f);
+	Matrix translation = Matrix::CreateTranslation(obj.Object->GetAxisAlignedBoundingBoxTransformed().GetCenter());
+	Matrix scale = Matrix::CreateScale(obj.Object->GetAxisAlignedBoundingBoxTransformed().GetExtents().x, obj.Object->GetAxisAlignedBoundingBoxTransformed().GetExtents().y, 1.f);
 
 	m_effect->SetMatrices(scale*Matrix::Identity*translation, camera.GetView(), camera.GetProj());
 	m_effect->Apply(deviceContext);
@@ -130,8 +132,8 @@ void CollisionVisualizer::drawAABB(const CollisionObject& obj, const Camera& cam
 
 void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
 {
-	Matrix translation = Matrix::CreateTranslation(obj.Object->GetOrientedBoundingBoxTransformed().Center);
-	Matrix scale = Matrix::CreateScale(obj.Object->GetOrientedBoundingBoxTransformed().Extents.x, obj.Object->GetOrientedBoundingBoxTransformed().Extents.y, 1.f);
+	Matrix translation = Matrix::CreateTranslation(obj.Object->GetOrientedBoundingBoxTransformed().GetCenter());
+	Matrix scale = Matrix::CreateScale(obj.Object->GetOrientedBoundingBoxTransformed().GetExtents().x, obj.Object->GetOrientedBoundingBoxTransformed().GetExtents().y, 1.f);
 	const Matrix& rotation = obj.Object->GetLastAppliedRotationMatrix();
 
 	m_effect->SetMatrices(scale*rotation*translation, camera.GetView(), camera.GetProj());
@@ -140,9 +142,23 @@ void CollisionVisualizer::drawOBB(const CollisionObject& obj, const Camera& came
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &m_verticesOBB[0], m_verticesOBB.size());
 }
 
-void CollisionVisualizer::drawMinkovskySum(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext)
+void CollisionVisualizer::drawMinkovskiDifference(const CollisionObject& obj, const Camera& camera, ID3D11DeviceContext* deviceContext) const
 {
-	//todo
+	std::vector<DirectX::VertexPositionColor> vertices;
+	for(const auto& vertex : obj.Object->GetVertices())
+	{
+		vertices.push_back(VertexPositionColor({ vertex.x, vertex.y, 1.f}, m_minkovskySumColor));
+	}
+	vertices.push_back(vertices[0]);
+
+	const Matrix& translation = obj.Object->GetLastAppliedTranslationMatrix();
+	const Matrix& scale = obj.Object->GetLastAppliedScaleMatrix();
+	const Matrix& rotation = obj.Object->GetLastAppliedRotationMatrix();
+
+	m_effect->SetMatrices(scale*rotation*translation, camera.GetView(), camera.GetProj());
+	m_effect->Apply(deviceContext);
+
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, &vertices[0], vertices.size());
 }
 
 std::vector<Vector2> CollisionVisualizer::createCircleVerticesLineStrip(const float& radius) const

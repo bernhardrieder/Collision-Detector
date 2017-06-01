@@ -34,7 +34,6 @@
 #include <d3d11_1.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
-#include <DirectXCollision.h>
 
 #include <algorithm>
 #include <exception>
@@ -75,6 +74,10 @@ namespace DX
 #include "VertexTypes.h"
 #include "WICTextureLoader.h"
 
+#include "CollisionHelper.h"
+#include "BoundingSphere.h"
+#include "AxisAlignedBoundingBox.h"
+#include "OrientedBoundingBox.h"
 #include "JarvisMarch.h"
 #include "Camera.h"
 #include "Player.h"
@@ -84,3 +87,5 @@ namespace DX
 #include "CollisionVisualizer.h"
 #include "CollisionDetector2D.h"
 #include "Collideable2D.h"
+
+#include "omp.h"

@@ -80,9 +80,9 @@ const std::vector<DirectX::SimpleMath::Vector2>& Player::GetVertices() const
 
 void Player::createMesh()
 {
-	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Red);
-	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Red);
-	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Red);
+	VertexPositionColor v1(Vector3(0.f, 0.5f, 0.5f), Colors::Brown);
+	VertexPositionColor v2(Vector3(0.5f, -0.5f, 0.5f), Colors::Brown);
+	VertexPositionColor v3(Vector3(-0.5f, -0.5f, 0.5f), Colors::Brown);
 	m_vertices.push_back(v1);
 	m_vertices.push_back(v2);
 	m_vertices.push_back(v3);
