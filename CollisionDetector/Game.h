@@ -70,7 +70,7 @@ private:
 
 	Camera m_camera;
 	Player m_player;
-	const static size_t m_numOfAsteroids = 300;
+	const static size_t m_numOfAsteroids = 1000;
 	Asteroid m_asteroids[m_numOfAsteroids];
 	CollisionDetection::CollisionDetector2D m_collisionDetector;
 	CollisionVisualizer m_collisionVisualizer;
