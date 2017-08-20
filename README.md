@@ -1,3 +1,6 @@
-created with visual studio 2017
+# Collision Detector
+This project is an exercise for the course Physics and Simulation at the University of Applied Sciences Technikum Wien. Generally it's about performance issues in dynamic and interactive collision detection. It shows how different collision detection approaches affects the performance - starting with the less reliable and fastest method up to the the almost best and slowest method for interactive collision detection.
 
-uses the directx11 toolkit included via nuget
+### Reqirements
+- Visual Studio 2017
+- DirectX 11 supported Hardware
